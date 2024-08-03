@@ -1,40 +1,27 @@
-import { useState } from 'react';
-import ProblemPage from './ProblemPage';
-import CodeEditor from './CodeEditor';
-import 'react-resizable/css/styles.css';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ProblemSelector from './ProblemSelector/ProblemSelectorView';
+import ProblemViewView from './ProblemView/ProblemViewView';
+import { useParams } from 'react-router-dom';
 
-const App = () => {
-  const [dividerPosition, setDividerPosition] = useState(50); // initial position at 50%
+const ProblemViewWrapper: React.FC = () => {
+  const { problemId } = useParams<{ problemId: string }>();
 
-  const handleMouseDown = () => {
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  };
+  if (!problemId) {
+    return <div>Problem ID is missing</div>;
+  }
 
-  const handleMouseMove = (e: MouseEvent) => {
-    const newDividerPosition = (e.clientX / window.innerWidth) * 100;
-    setDividerPosition(newDividerPosition);
-  };
+  return <ProblemViewView problem={problemId} />;
+};
 
-  const handleMouseUp = () => {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-  };
-
+const App: React.FC = () => {
   return (
-    <div className="container">
-      <div className="pane left-pane" style={{ width: `${dividerPosition}%` }}>
-        <ProblemPage />
-      </div>
-      <div className="divider" onMouseDown={handleMouseDown} />
-      <div
-        className="pane right-pane"
-        style={{ width: `${100 - dividerPosition}%` }}
-      >
-        <CodeEditor />
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<ProblemSelector />} />
+        <Route path="/problem/:problemId" element={<ProblemViewWrapper />} />
+      </Routes>
+    </Router>
   );
 };
 
