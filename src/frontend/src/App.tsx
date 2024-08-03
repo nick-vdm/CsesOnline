@@ -10,10 +10,10 @@ const App: React.FC = () => {
     <div className="container">
       <ResizableBox
         className="resizable left-pane"
-        width={400}
+        width={window.innerWidth * 0.4}
         height={Infinity}
-        minConstraints={[200, Infinity]}
-        maxConstraints={[800, Infinity]}
+        minConstraints={[0, Infinity]}
+        maxConstraints={[window.innerWidth * 0.8, Infinity]}
         axis="x"
       >
         <ProblemPage />

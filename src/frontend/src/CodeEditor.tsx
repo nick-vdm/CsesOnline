@@ -20,7 +20,7 @@ const CodeEditor: React.FC = () => {
     };
   }, []);
 
-  return <div ref={editorRef} style={{ height: '100%' }} />;
+  return <div ref={editorRef} className="code-editor" />;
 };
 
 export default CodeEditor;
