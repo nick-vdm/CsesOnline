@@ -42,16 +42,12 @@
   height: 100vh;
 }
 
-.resizable {
-  overflow: auto;
-}
-
 .left-pane {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   background-color: #282c34;
   color: #abb2bf;
   padding: 16px;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -84,10 +80,6 @@
 .container {
   display: flex;
   height: 100vh;
-}
-
-.resizable {
-  position: relative;
 }
 
 .resizable .react-resizable-handle {
