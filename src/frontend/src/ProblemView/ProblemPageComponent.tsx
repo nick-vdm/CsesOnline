@@ -1,9 +1,10 @@
 import React from 'react';
+import { ProblemViewViewProps } from './types';
 
-const ProblemPage: React.FC = () => {
+const ProblemPage: React.FC<ProblemViewViewProps> = ({ problem }) => {
   return (
     <div>
-      <h1>Problem Title</h1>
+      <h1>{problem}</h1>
       <p>
         Problem description goes here.
         Testtttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt

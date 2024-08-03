@@ -29,17 +29,16 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problem }) => {
 
   return (
     <div className="container">
-      <h2>{problem}</h2>
       <div className="pane left-pane" style={{ width: `${dividerPosition}%` }}>
-        <ProblemPage />
+        <ProblemPage problem={problem} />
       </div>
+      <div className="divider" onMouseDown={handleMouseDown} />
       <div
         className="pane right-pane"
         style={{ width: `${100 - dividerPosition}%` }}
       >
-        <CodeEditor />
+        <CodeEditor problem={problem} />
       </div>
-      <div className="divider" onMouseDown={handleMouseDown} />
     </div>
   );
 };
