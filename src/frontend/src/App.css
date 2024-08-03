@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.resizable {
+  overflow: auto;
+}
+
+.left-pane {
+  border-right: 5px solid #ccc;
+}
+
+.right-pane {
+  flex-grow: 1;
+}

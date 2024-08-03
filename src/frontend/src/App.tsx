@@ -1,26 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
+import { ResizableBox } from 'react-resizable';
+import ProblemPage from './ProblemPage';
+import CodeEditor from './CodeEditor';
+import 'react-resizable/css/styles.css';
 import './App.css';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <ResizableBox
+        className="resizable left-pane"
+        width={400}
+        height={Infinity}
+        minConstraints={[200, Infinity]}
+        maxConstraints={[800, Infinity]}
+        axis="x"
+      >
+        <ProblemPage />
+      </ResizableBox>
+      <div className="right-pane">
+        <CodeEditor />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
