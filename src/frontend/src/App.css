@@ -79,6 +79,7 @@
 
 .container {
   display: flex;
+  position: relative;
   height: 100vh;
 }
 
@@ -90,4 +91,35 @@
   top: 0;
   cursor: col-resize;
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* App.css */
+.container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.pane {
+  overflow: auto;
+  height: 100%;
+}
+
+.divider {
+  width: 5px;
+  cursor: ew-resize;
+  background-color: #ccc;
+  position: relative;
+  z-index: 1;
+}
+
+.divider:hover {
+  background-color: #888;
+}
+
+.pane-content {
+  padding: 20px;
+  box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
 }
