@@ -28,7 +28,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "eslintConfig": {
     "extends": [
@@ -49,6 +50,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react-resizable": "^3.0.8"
+    "@types/react-resizable": "^3.0.8",
+    "prettier": "^3.3.3"
   }
 }
