@@ -47,9 +47,27 @@
 }
 
 .left-pane {
-  border-right: 5px solid #ccc;
 }
 
 .right-pane {
   flex-grow: 1;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.resizable {
+  position: relative;
+}
+
+.resizable .react-resizable-handle {
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  right: 0;
+  top: 0;
+  cursor: col-resize;
+  background-color: rgba(0, 0, 0, 0.1);
 }
