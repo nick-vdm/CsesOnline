@@ -1,20 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-interface AuthPageProps {
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #282c34;
+  color: #abb2bf;
+`;
+
+const FormContainer = styled.form`
+  background-color: #21252b;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+`;
+
+const FormTitle = styled.h2`
+  margin-bottom: 1.5rem;
+  color: #61dafb;
+  text-align: center;
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const FormLabel = styled.label`
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #abb2bf;
+`;
+
+const FormInput = styled.input`
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #3e4451;
+  border-radius: 4px;
+  background-color: #282c34;
+  color: #abb2bf;
+  box-sizing: border-box;
+`;
+
+const SubmitButton = styled.button`
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #61dafb;
+  color: #282c34;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #21a1f1;
+  }
+`;
+
+interface AuthPageComponentProps {
+  isLogin: boolean;
   onAuthSuccess: (token: string) => void;
 }
 
-const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLogin, setIsLogin] = useState(true);
+const AuthPageComponent: React.FC<AuthPageComponentProps> = ({
+  isLogin,
+  onAuthSuccess,
+}) => {
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const endpoint = isLogin ? '/api/login' : '/api/signup';
-    const response = await fetch(endpoint, {
+    const response = await fetch('/api/auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,40 +89,41 @@ const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      onAuthSuccess('apples');
-      navigate('/problem-view');
+      onAuthSuccess(data.token);
+      navigate('/');
     } else {
       alert('Authentication failed');
     }
   };
 
   return (
-    <div>
-      <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username:</label>
-          <input
+    <PageContainer>
+      <FormContainer onSubmit={handleSubmit}>
+        <FormTitle>{isLogin ? 'Login' : 'Sign Up'}</FormTitle>
+        <FormGroup>
+          <FormLabel htmlFor="username">Username</FormLabel>
+          <FormInput
             type="text"
+            id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
+        </FormGroup>
+        <FormGroup>
+          <FormLabel htmlFor="password">Password</FormLabel>
+          <FormInput
             type="password"
+            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </div>
-        <button type="submit">{isLogin ? 'Login' : 'Sign Up'}</button>
-      </form>
-      <button onClick={() => setIsLogin(!isLogin)}>
-        {isLogin ? 'Switch to Sign Up' : 'Switch to Login'}
-      </button>
-    </div>
+        </FormGroup>
+        <SubmitButton type="submit">
+          {isLogin ? 'Login' : 'Sign Up'}
+        </SubmitButton>
+      </FormContainer>
+    </PageContainer>
   );
 };
 
-export default AuthPage;
+export default AuthPageComponent;

@@ -50,7 +50,7 @@ const App: React.FC = () => {
             isAuthenticated ? (
               <Navigate to="/" />
             ) : (
-              <AuthPage onAuthSuccess={handleAuthSuccess} />
+              <AuthPage onAuthSuccess={handleAuthSuccess} isLogin={true} />
             )
           }
         />
