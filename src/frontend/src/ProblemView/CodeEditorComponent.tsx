@@ -19,7 +19,7 @@ const CodeEditor: React.FC<ProblemViewViewProps> = ({ problem }) => {
     return () => {
       view.destroy();
     };
-  }, []);
+  }, [problem]);
 
   return <div ref={editorRef} className="code-editor" />;
 };

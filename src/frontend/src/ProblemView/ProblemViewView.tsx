@@ -58,7 +58,7 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problem }) => {
           </div>
         </div>
       ) : (
-        <AuthPage onAuthSuccess={handleAuthSuccess} isLogin={true} />
+        <AuthPage onAuthSuccess={handleAuthSuccess} />
       )}
     </div>
   );

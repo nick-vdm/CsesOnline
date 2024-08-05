@@ -1,6 +1,7 @@
 import React, { useState, FormEvent } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { PATHS } from '../Consts';
 
 const PageContainer = styled.div`
   display: flex;
@@ -39,9 +40,9 @@ const FormLabel = styled.label`
 
 const FormInput = styled.input`
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #3e4451;
+  padding: 0.5rem;
   border-radius: 4px;
+  border: 1px solid #abb2bf;
   background-color: #282c34;
   color: #abb2bf;
   box-sizing: border-box;
@@ -56,28 +57,45 @@ const SubmitButton = styled.button`
   color: #282c34;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  margin-top: 1rem;
+`;
+
+const SwapLink = styled.a`
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+  color: #61dafb;
+  cursor: pointer;
+  text-decoration: none;
 
   &:hover {
-    background-color: #21a1f1;
+    text-decoration: underline;
   }
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  margin-top: 1rem;
+  text-align: center;
+`;
+
 interface AuthPageComponentProps {
-  isLogin: boolean;
   onAuthSuccess: (token: string) => void;
 }
 
 const AuthPageComponent: React.FC<AuthPageComponentProps> = ({
-  isLogin,
   onAuthSuccess,
 }) => {
+  const location = useLocation();
+  const isLogin = location.pathname === PATHS.AUTH_LOGIN;
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setError(null); // Reset error message
     const response = await fetch('/api/auth', {
       method: 'POST',
       headers: {
@@ -92,7 +110,8 @@ const AuthPageComponent: React.FC<AuthPageComponentProps> = ({
       onAuthSuccess(data.token);
       navigate('/');
     } else {
-      alert('Authentication failed');
+      const errorData = await response.json();
+      setError(errorData.message || 'An error occurred. Please try again.');
     }
   };
 
@@ -121,6 +140,12 @@ const AuthPageComponent: React.FC<AuthPageComponentProps> = ({
         <SubmitButton type="submit">
           {isLogin ? 'Login' : 'Sign Up'}
         </SubmitButton>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <SwapLink href={isLogin ? PATHS.AUTH_SIGNUP : PATHS.AUTH_LOGIN}>
+          {isLogin
+            ? "Don't have an account? Sign Up"
+            : 'Already have an account? Login'}
+        </SwapLink>
       </FormContainer>
     </PageContainer>
   );

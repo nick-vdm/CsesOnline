@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { PATHS } from '../Consts';
 
 interface TopBarProps {
   isAuthenticated: boolean;
@@ -51,7 +52,7 @@ const TopBar: React.FC<TopBarProps> = ({ isAuthenticated }) => {
         </Link>
       </div>
       <Link
-        to={isAuthenticated ? '/profile' : '/auth'}
+        to={isAuthenticated ? PATHS.PROFILE : PATHS.AUTH_LOGIN}
         style={{
           color: '#61dafb',
           textDecoration: 'none',

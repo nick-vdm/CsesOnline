@@ -11,6 +11,7 @@ import AuthPage from './Auth/AuthPageComponent';
 import TopBar from './TopBar/TopBar';
 import Profile from './Profile/ProfileView';
 import { useParams } from 'react-router-dom';
+import { PATHS } from './Consts';
 
 const ProblemViewWrapper: React.FC = () => {
   const { problemId } = useParams<{ problemId: string }>();
@@ -42,15 +43,16 @@ const App: React.FC = () => {
       <TopBar isAuthenticated={isAuthenticated} /> {}
       <Routes>
         <Route path="/" element={<ProblemSelector />} />
+        <Route path={PATHS.PROBLEM_LIST} element={<ProblemSelector />} />
         <Route path="/problem/:problemId" element={<ProblemViewWrapper />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path={PATHS.PROFILE} element={<Profile />} />
         <Route
-          path="/auth"
+          path={PATHS.AUTH_SIGNUP}
           element={
             isAuthenticated ? (
               <Navigate to="/" />
             ) : (
-              <AuthPage onAuthSuccess={handleAuthSuccess} isLogin={true} />
+              <AuthPage onAuthSuccess={handleAuthSuccess} />
             )
           }
         />
