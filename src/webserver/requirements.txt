@@ -1,0 +1,6 @@
+flask
+flask_sqlalchemy
+bcrypt
+flake8
+mypy
+pytest
