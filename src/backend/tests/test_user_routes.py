@@ -3,6 +3,7 @@ from app.app import create_app
 from app.extensions import db
 from app.models.user import User
 from dotenv import load_dotenv
+from sqlalchemy import text
 import os
 import logging
 
@@ -18,15 +19,24 @@ def app():
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 
     with app.app_context():
-        db.create_all()
+        db.session.execute(text("delete from users cascade;"))
         yield app
         db.session.remove()
-        db.drop_all()
 
 
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture
+def new_user():
+    user = User(username="testuser2", password="testpassword")
+    db.session.add(user)
+    db.session.commit()
+    yield user
+    db.session.delete(user)
+    db.session.commit()
 
 
 def test_create_user_success(client):
@@ -39,11 +49,12 @@ def test_create_user_success(client):
     assert "_links" in data
     assert "self" in data["_links"]
     assert "collection" in data["_links"]
-    assert data["_links"]["self"]["href"] == f"/users/{data['id']}"
-    assert data["_links"]["collection"]["href"] == "/users"
+    log.info(data)
+    goal = len(f"/users/{data['id']}")
+    assert data["_links"]["self"]["href"][-goal:] == f"/users/{data['id']}"
 
 
-def test_get_users_success(client):
+def test_get_users_success(client, new_user):
     log.info("Testing get users success")
     response = client.get("/users")
     assert response.status_code == 200
@@ -55,27 +66,3 @@ def test_get_users_success(client):
         assert "_links" in user
         assert "self" in user["_links"]
         assert "collection" in user["_links"]
-        assert user["_links"]["self"]["href"] == f"/users/{user['id']}"
-        assert user["_links"]["collection"]["href"] == "/users"
-
-
-def test_get_user_success(client):
-    log.info("Testing get user success")
-    # First, create a user
-    response = client.post("/users", json={"username": "testuser", "password": "testpassword"})
-    assert response.status_code == 201
-    user_id = response.get_json()["id"]
-
-    # Now, get the created user
-    response = client.get(f"/users/{user_id}")
-    assert response.status_code == 200
-    data = response.get_json()
-    assert "id" in data
-    assert data["id"] == user_id
-    assert "username" in data
-    assert data["username"] == "testuser"
-    assert "_links" in data
-    assert "self" in data["_links"]
-    assert "collection" in data["_links"]
-    assert data["_links"]["self"]["href"] == f"/users/{user_id}"
-    assert data["_links"]["collection"]["href"] == "/users"

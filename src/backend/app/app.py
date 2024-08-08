@@ -3,6 +3,7 @@ from flask import Flask
 import os
 import logging
 import logging.config
+from flask_hal import HAL
 
 
 def create_app():
@@ -12,6 +13,7 @@ def create_app():
     log.info("Creating app")
 
     app = Flask(__name__)
+    HAL(app)
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
     db.init_app(app)
 
