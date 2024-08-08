@@ -3,7 +3,6 @@ from app.models import Problem
 from app.extensions import db
 import json
 from flask_hal import document, link, HAL
-from app.utils.document_2_dict import document_to_dict
 import logging
 
 bp = Blueprint("problem_routes", __name__)
@@ -36,7 +35,7 @@ def get_problems():
     log.info("problems collection %s", problems_collection)
     response = document.Document(data={"problems": problems_collection}, links=link.Collection())
     log.info("sending back %s", response.to_json())
-    return jsonify(document_to_dict(response))
+    return jsonify(response.to_dict())
 
 
 @bp.route("/problems/<int:problem_id>", methods=["GET"])
@@ -59,4 +58,4 @@ def get_problem(problem_id):
         ),
     )
     log.info("Sending back %s", response.to_json())
-    return jsonify(document_to_dict(response))
+    return jsonify(response.to_dict())
