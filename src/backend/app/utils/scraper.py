@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Dict
 import zipfile
 import os
 from dotenv import load_dotenv
@@ -131,7 +132,7 @@ def scrape_test_cases(problem: Problem):
             for file_name in zip_ref.namelist():
                 with zip_ref.open(file_name) as file:
                     test_cases[file_name] = file.read().decode("utf-8")
-        print("Test cases loaded into variable.", test_cases)
+        print("Test cases loaded into variable.", len(test_cases))
 
         return test_cases
     else:
@@ -139,11 +140,22 @@ def scrape_test_cases(problem: Problem):
         return None
 
 
+def save_test_cases(folder_path, data_dict: Dict[str, str]):
+    os.makedirs(folder_path, exist_ok=True)
+
+    for file_name, file_content in data_dict.items():
+        # Step 3: Write each key-value pair to a file
+        file_path = os.path.join(folder_path, file_name)
+        with open(file_path, "w") as file:
+            file.write(file_content)
+
+
 if __name__ == "__main__":
     for problem in next_problem_link():
         content = scrape_problem_description(problem)
         problem = insert_or_update_problem(problem)
-        scrape_test_cases(problem)
+        tests = scrape_test_cases(problem)
+        save_test_cases(os.getenv("SAVE_PATH") + "/" + problem.tests_id, tests)
         print(str(problem))
         print("Content", len(content))
     pass
