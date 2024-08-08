@@ -1,5 +1,6 @@
 import pytest
 from app.app import create_app
+import bcrypt
 from app.extensions import db
 from app.models.submissions import Submission
 from app.models.user import User
@@ -35,12 +36,13 @@ def client(app):
 
 @pytest.fixture
 def new_user():
-    user = User(username="testuser", password="testpassword")
+    password = "testpassword"
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
+    user = User(username="testuser", password=hashed_password.decode("utf-8"))
     db.session.add(user)
     db.session.commit()
     yield user
-    db.session.delete(user)
-    db.session.commit()
 
 
 @pytest.fixture
@@ -49,8 +51,6 @@ def new_problem():
     db.session.add(problem)
     db.session.commit()
     yield problem
-    db.session.delete(problem)
-    db.session.commit()
 
 
 @pytest.fixture
@@ -66,6 +66,12 @@ def new_submission(new_user, new_problem):
     db.session.commit()
     yield submission
     db.session.delete(submission)
+    db.session.commit()
+
+    db.session.delete(new_problem)
+    db.session.commit()
+
+    db.session.delete(new_user)
     db.session.commit()
 
 
@@ -107,3 +113,28 @@ def test_get_submission_success(client, new_submission):
     assert "_links" in data
     assert "self" in data["_links"]
     assert "collection" in data["_links"]
+
+
+def test_create_submission_success(client, new_user, new_problem):
+    response = client.post("/login", json={"username": "testuser", "password": "testpassword"})
+    assert response.status_code == 200
+    data = response.get_json()
+    token = data["token"]
+
+    payload = {
+        "program_lang": "python",
+        "code": "print('Hello, World!')",
+        "problem_id": new_problem.id,
+        "status": "PENDING",
+        "result": None,
+        "result_time_ms": None,
+        "result_memory_kb": None,
+        "output_text": None,
+        "error_text": None,
+    }
+
+    headers = {"Authorization": f"Bearer {token}"}
+    response = client.post("/create_submission", json=payload, headers=headers)
+    assert response.status_code == 201
+    data = response.get_json()
+    assert data["message"] == "Submission created successfully!"

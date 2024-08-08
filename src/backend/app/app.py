@@ -26,8 +26,8 @@ def create_app():
     log.info("Creating app")
 
     app = Flask(__name__)
-    HAL(app)
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     db.init_app(app)
 
     log_filter = RequestLogFilter()

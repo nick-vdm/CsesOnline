@@ -1,8 +1,10 @@
-from flask import Blueprint, request, jsonify, url_for
+from flask import Blueprint, request, jsonify, url_for, current_app
 from flask_hal import document, link
 from app.models.user import User
 from app.extensions import db
 import logging
+import jwt
+import datetime
 import bcrypt
 
 bp = Blueprint("user_routes", __name__)
@@ -74,3 +76,30 @@ def get_user(user_id):
         ),
     )
     return jsonify(response.to_dict())
+
+@bp.route("/login", methods=["POST"])
+def log_user_in():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "Invalid username or password"}), 401
+
+    if bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
+        # Ensure SECRET_KEY is a string
+        secret_key = str(current_app.config["SECRET_KEY"])
+        
+        # Generate JWT token with timezone-aware datetime
+        token = jwt.encode(
+            {"user_id": user.id, "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)},
+            secret_key,
+            algorithm="HS256",
+        )
+        return jsonify({"message": "Login successful", "token": token}), 200
+
+    return jsonify({"error": "Invalid username or password"}), 401

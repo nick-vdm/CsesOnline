@@ -19,6 +19,8 @@ def app():
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 
     with app.app_context():
+        db.session.execute(text("delete from submissions cascade;"))
+        db.session.execute(text("delete from users cascade;"))
         db.session.execute(text("delete from problems cascade;"))
         yield app
         db.session.remove()

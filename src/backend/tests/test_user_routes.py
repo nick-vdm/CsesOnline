@@ -1,4 +1,5 @@
 import pytest
+import bcrypt
 from app.app import create_app
 from app.extensions import db
 from app.models.user import User
@@ -19,7 +20,9 @@ def app():
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 
     with app.app_context():
+        db.session.execute(text("delete from submissions cascade;"))
         db.session.execute(text("delete from users cascade;"))
+        db.session.execute(text("delete from problems cascade;"))
         yield app
         db.session.remove()
 
@@ -31,7 +34,10 @@ def client(app):
 
 @pytest.fixture
 def new_user():
-    user = User(username="testuser", password="testpassword")
+    password = "testpassword"
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
+    user = User(username="testuser", password=hashed_password.decode("utf-8"))
     db.session.add(user)
     db.session.commit()
     yield user
@@ -53,6 +59,16 @@ def test_create_user_success(client):
     goal = len(f"/users/{data['id']}")
     # TODO bug here - this is just /users/
     # assert data["_links"]["self"]["href"][-goal:] == f"/users/{data['id']}"
+
+
+def test_login_user_success(client, new_user):
+    log.info("Testing user login success")
+    response = client.post("/login", json={"username": "testuser", "password": "testpassword"})
+    assert response.status_code == 200
+    data = response.get_json()
+    log.info("Got back %s", data)
+    assert "message" in data
+    assert "token" in data
 
 
 def test_get_users_success(client, new_user):
