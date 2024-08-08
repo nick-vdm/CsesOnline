@@ -18,10 +18,11 @@ def create_app():
     db.init_app(app)
 
     with app.app_context():
-        from .routes import user_routes, problem_routes
+        from .routes import user_routes, problem_routes, submission_routes
 
         app.register_blueprint(user_routes.bp)
         app.register_blueprint(problem_routes.bp)
+        app.register_blueprint(submission_routes.bp)
 
     log.info("App created")
     return app

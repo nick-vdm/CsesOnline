@@ -35,8 +35,8 @@ def new_user():
     db.session.add(user)
     db.session.commit()
     yield user
-    # db.session.delete(user)
-    # db.session.commit()
+    db.session.delete(user)
+    db.session.commit()
 
 
 def test_create_user_success(client):
