@@ -16,4 +16,5 @@ class Problem(db.Model):
     difficulty = db.Column(db.Enum(DifficultyEnum), nullable=False)
     problem_description = db.Column(db.Text, nullable=False)
     problem_link = db.Column(db.Text, nullable=True)
+    tests_id = db.Column(db.String(255), nullable=True)
     tags = db.Column(db.ARRAY(db.String), nullable=False)
