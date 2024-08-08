@@ -47,7 +47,7 @@ def new_user():
 
 @pytest.fixture
 def new_problem():
-    problem = Problem(title="Sample Problem", markdown_text="Sample Description")
+    problem = Problem(title="Sample Problem", problem_description="Sample Description")
     db.session.add(problem)
     db.session.commit()
     yield problem

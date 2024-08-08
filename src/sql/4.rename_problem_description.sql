@@ -9,7 +9,7 @@ BEGIN
     END IF;
 
     BEGIN
-        ALTER TABLE problems DROP COLUMN markdown_text;
+        ALTER TABLE problems DROP COLUMN problem_description;
         ALTER TABLE problems ADD COLUMN problem_description TEXT;
 
         INSERT INTO schema_version (version) VALUES (4);

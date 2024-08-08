@@ -42,7 +42,7 @@ def get_problem(problem_id):
             "id": problem.id,
             "title": problem.title,
             "difficulty": problem.difficulty.value,
-            "markdown_text": problem.markdown_text,
+            "problem_description": problem.problem_description,
             "tags": problem.tags,
         },
         links=link.Collection(

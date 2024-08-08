@@ -16,7 +16,7 @@ BEGIN
             lastupdated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             title VARCHAR(255) NOT NULL,
             difficulty problem_difficulty NOT NULL,
-            markdown_text TEXT NOT NULL,
+            problem_description TEXT NOT NULL,
             tags TEXT[]
         );
 

@@ -36,7 +36,7 @@ def new_problem():
     problem = Problem(
         title="Sample Problem",
         difficulty=DifficultyEnum.EASY,
-        markdown_text="This is a sample problem.",
+        problem_description="This is a sample problem.",
         tags=["sample", "test"],
     )
     db.session.add(problem)
@@ -59,7 +59,7 @@ def test_get_problems_success(client, new_problem):
         assert "id" in problem
         assert "title" in problem
         assert "difficulty" in problem
-        assert "markdown_text" not in problem
+        assert "problem_description" not in problem
         assert "tags" in problem
         assert "_links" in problem
         assert "self" in problem["_links"]
@@ -77,7 +77,7 @@ def test_get_problem_success(client, new_problem):
     assert data["id"] == new_problem.id
     assert data["title"] == new_problem.title
     assert data["difficulty"] == new_problem.difficulty.value
-    assert data["markdown_text"] == new_problem.markdown_text
+    assert data["problem_description"] == new_problem.problem_description
     assert data["tags"] == new_problem.tags
     assert "_links" in data
     assert "self" in data["_links"]
