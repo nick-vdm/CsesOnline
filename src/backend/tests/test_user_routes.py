@@ -31,7 +31,7 @@ def client(app):
 
 @pytest.fixture
 def new_user():
-    user = User(username="testuser2", password="testpassword")
+    user = User(username="testuser", password="testpassword")
     db.session.add(user)
     db.session.commit()
     yield user
@@ -53,7 +53,7 @@ def test_create_user_success(client):
     assert data["_links"]["self"]["href"][-goal:] == f"/users/{data['id']}"
 
 
-def test_get_users_success(client, new_user):
+def test_get_users_success(client):
     log.info("Testing get users success")
     response = client.get("/users")
     assert response.status_code == 200
