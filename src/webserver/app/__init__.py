@@ -1,17 +1,15 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from .extensions import db
+from .models.user import User
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object("app.config.config.Config")
+    app.config.from_object("config.Config")
+
     db.init_app(app)
 
     with app.app_context():
-        from .routes import user_routes
-
-        app.register_blueprint(user_routes.bp)
+        db.create_all()
 
     return app

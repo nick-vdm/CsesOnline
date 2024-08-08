@@ -5,4 +5,6 @@ bcrypt
 flake8
 mypy
 pytest
+pytest-flask
 python-dotenv
+psycopg2-binary
