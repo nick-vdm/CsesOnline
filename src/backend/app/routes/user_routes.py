@@ -2,9 +2,11 @@ from flask import Blueprint, request, jsonify, url_for
 from flask_hal import document, link
 from app.models.user import User
 from app.extensions import db
+import logging
 import bcrypt
 
 bp = Blueprint("user_routes", __name__)
+log = logging.getLogger("app")
 
 
 @bp.route("/users", methods=["POST"])
@@ -19,7 +21,7 @@ def create_user():
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
 
-    new_user = User(username=username, password=hashed_password.decode('utf-8'))
+    new_user = User(username=username, password=hashed_password.decode("utf-8"))
     db.session.add(new_user)
     db.session.commit()
 
@@ -44,7 +46,7 @@ def get_users():
                 "username": user.username,
             },
             links=link.Collection(link.Link("collection", href=url_for("user_routes.get_users", _external=True))),
-        )
+        ).to_dict()
         for user in users
     ]
 
@@ -57,7 +59,11 @@ def get_users():
 
 @bp.route("/users/<int:user_id>", methods=["GET"])
 def get_user(user_id):
-    user = User.query.get_or_404(user_id)
+    user = db.session.get(User, user_id)
+
+    if not user:
+        return jsonify({"error": f"User {user_id} not found"}), 404
+
     response = document.Document(
         data={
             "id": user.id,
@@ -67,4 +73,4 @@ def get_user(user_id):
             link.Link("collection", href=url_for("user_routes.get_users", _external=True)),
         ),
     )
-    return jsonify(response.to_dict()), 201
+    return jsonify(response.to_dict())

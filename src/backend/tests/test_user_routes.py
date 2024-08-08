@@ -35,8 +35,8 @@ def new_user():
     db.session.add(user)
     db.session.commit()
     yield user
-    db.session.delete(user)
-    db.session.commit()
+    # db.session.delete(user)
+    # db.session.commit()
 
 
 def test_create_user_success(client):
@@ -55,15 +55,29 @@ def test_create_user_success(client):
     # assert data["_links"]["self"]["href"][-goal:] == f"/users/{data['id']}"
 
 
-def test_get_users_success(client):
+def test_get_users_success(client, new_user):
     log.info("Testing get users success")
     response = client.get("/users")
     assert response.status_code == 200
     data = response.get_json()
     assert "users" in data
+    assert len(data["users"]) == 1
     for user in data["users"]:
         assert "id" in user
         assert "username" in user
         assert "_links" in user
         assert "self" in user["_links"]
         assert "collection" in user["_links"]
+
+
+def test_get_user_success(client, new_user):
+    log.info("Testing get users success")
+    response = client.get(f"/users/{new_user.id}")
+    assert response.status_code == 200
+    data = response.get_json()
+
+    assert "id" in data
+    assert "username" in data
+    assert "_links" in data
+    assert "self" in data["_links"]
+    assert "collection" in data["_links"]
