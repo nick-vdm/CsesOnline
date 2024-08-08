@@ -10,9 +10,7 @@ log = logging.getLogger("app")
 
 @bp.route("/problems", methods=["GET"])
 def get_problems():
-    log.info("Getting all problems")
     problems = Problem.query.all()
-    log.info("building collection %s", len(problems))
     problems_collection = [
         document.Document(
             data={
@@ -28,9 +26,7 @@ def get_problems():
         for problem in problems
     ]
 
-    log.info("problems collection %s", problems_collection)
     response = document.Document(data={"problems": problems_collection}, links=link.Collection())
-    log.info("sending back %s", response.to_json())
     return jsonify(response.to_dict())
 
 
@@ -53,5 +49,4 @@ def get_problem(problem_id):
             link.Link("collection", href=url_for("problem_routes.get_problems")),
         ),
     )
-    log.info("Sending back %s", response.to_json())
     return jsonify(response.to_dict())
