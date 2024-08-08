@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import requests
 from bs4 import BeautifulSoup
 
-base_url = "https://cses.fi/problemset/"
+base_url = "https://cses.fi"
 
 
 @dataclass
@@ -14,11 +14,7 @@ class Problem:
 
 
 def next_problem_link():
-    """
-    generator function. gets the next link on
-    https://cses.fi/problemset/
-    """
-    response = requests.get(base_url)
+    response = requests.get(base_url + "/problemset/")
     soup = BeautifulSoup(response.content, "html.parser")
 
     current_group = ""
@@ -31,11 +27,18 @@ def next_problem_link():
             yield Problem(title=title, markdown_text="", group=current_group, link=link)
 
 
-def scrape_problem_description(link):
-    """
-    fetches the title and markdown text of a problem
-    """
-    pass
+def scrape_problem_description(problem: Problem):
+    url = base_url + problem.link
+    response = requests.get(url)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    content_div = soup.find("div", class_="content")
+    if content_div:
+        return str(content_div)
+    else:
+        return None
 
 
 def scrape_test_cases():
@@ -45,6 +48,7 @@ def scrape_test_cases():
 if __name__ == "__main__":
     for problem in next_problem_link():
         print(str(problem))
-        scrape_problem_description(problem)
+        content = scrape_problem_description(problem)
+        print(content)
         scrape_test_cases()
     pass
