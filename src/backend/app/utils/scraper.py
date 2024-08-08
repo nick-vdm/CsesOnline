@@ -49,10 +49,6 @@ def scrape_problem_description(problem: Problem):
         return None
 
 
-def scrape_test_cases():
-    pass
-
-
 # Load environment variables from .env file
 load_dotenv()
 
@@ -83,6 +79,23 @@ def insert_or_update_problem(problem):
         problem.db_id = new_problem.id
 
     return problem
+
+
+def scrape_test_cases(problem: Problem):
+    url = base_url + "/problemset/tests/" + problem.link.split("/")[-2] + "/"
+    print("Fetching", url)
+
+    form_data = {"csrf_token": os.getenv("TOKEN"), "download": "true"}
+
+    response = requests.post(url, data=form_data)
+
+    if response.status_code == 200:
+        with open("testcases.zip", "wb") as file:
+            file.write(response.content)
+        print("Test cases downloaded successfully.")
+    else:
+        print(f"Failed to download test cases. Status code: {response.status_code}")
+        pass
 
 
 if __name__ == "__main__":
