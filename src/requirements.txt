@@ -8,3 +8,4 @@ pytest
 pytest-flask
 python-dotenv
 psycopg2-binary
+sqlalchemy
