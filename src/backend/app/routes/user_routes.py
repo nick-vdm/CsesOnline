@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, url_for
 from flask_hal import document, link
 from app.models.user import User
 from app.extensions import db
+import bcrypt
 
 bp = Blueprint("user_routes", __name__)
 
@@ -15,7 +16,10 @@ def create_user():
     if not username or not password:
         return jsonify({"error": "Username and password are required"}), 400
 
-    new_user = User(username=username, password=password)
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
+
+    new_user = User(username=username, password=hashed_password.decode('utf-8'))
     db.session.add(new_user)
     db.session.commit()
 
