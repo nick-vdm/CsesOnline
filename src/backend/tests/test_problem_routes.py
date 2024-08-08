@@ -44,7 +44,7 @@ def new_problem():
     db.session.commit()
 
 
-def test_get_problems_success(client):
+def test_get_problems_success(client, new_problem):
     log.info("Testing get problems success")
     response = client.get("/problems")
     assert response.status_code == 200
@@ -52,11 +52,12 @@ def test_get_problems_success(client):
     data = response.get_json()
     log.info("Got back %s", data)
     assert "problems" in data
+    assert len(data["problems"]) == 1
     for problem in data["problems"]:
         assert "id" in problem
         assert "title" in problem
         assert "difficulty" in problem
-        assert "markdown_text" in problem
+        assert "markdown_text" not in problem
         assert "tags" in problem
         assert "_links" in problem
         assert "self" in problem["_links"]

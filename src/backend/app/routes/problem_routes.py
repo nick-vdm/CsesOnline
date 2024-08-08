@@ -16,19 +16,17 @@ def get_problems():
     problems = Problem.query.all()
     log.info("building collection %s", len(problems))
     problems_collection = [
-        document_to_dict(
-            document.Document(
-                data={
-                    "id": problem.id,
-                    "title": problem.title,
-                    "difficulty": problem.difficulty,
-                    "tags": problem.tags,
-                },
-                links=link.Collection(
-                    link.Link("collection", href=url_for("problem_routes.get_problems")),
-                ),
-            )
-        )
+        document.Document(
+            data={
+                "id": problem.id,
+                "title": problem.title,
+                "difficulty": problem.difficulty.value,
+                "tags": problem.tags,
+            },
+            links=link.Collection(
+                link.Link("collection", href=url_for("problem_routes.get_problems")),
+            ),
+        ).to_dict()
         for problem in problems
     ]
 
