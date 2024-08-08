@@ -10,7 +10,7 @@ log = logging.getLogger("app")
 
 @bp.route("/problems", methods=["GET"])
 def get_problems():
-    log.info("querying")
+    log.info("Getting all problems")
     problems = Problem.query.all()
     log.info("building collection %s", len(problems))
     problems_collection = [
