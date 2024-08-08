@@ -82,6 +82,9 @@ def test_get_submissions_success(client, new_submission):
         assert "linked_user" in submission
         assert "problem_id" in submission
         assert "status" in submission
+        assert "result" in submission
+        assert "result_time_ms" in submission
+        assert "result_memory_kb" in submission
         assert "_links" in submission
         assert "self" in submission["_links"]
         assert "collection" in submission["_links"]
@@ -98,6 +101,9 @@ def test_get_submission_success(client, new_submission):
     assert "linked_user" in data
     assert "problem_id" in data
     assert "status" in data
+    assert "result" in data
+    assert "result_time_ms" in data
+    assert "result_memory_kb" in data
     assert "_links" in data
     assert "self" in data["_links"]
     assert "collection" in data["_links"]
