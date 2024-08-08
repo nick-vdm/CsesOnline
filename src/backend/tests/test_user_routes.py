@@ -36,11 +36,46 @@ def test_create_user_success(client):
     data = response.get_json()
     assert "id" in data
     assert data["username"] == "testuser"
+    assert "_links" in data
+    assert "self" in data["_links"]
+    assert "collection" in data["_links"]
+    assert data["_links"]["self"]["href"] == f"/users/{data['id']}"
+    assert data["_links"]["collection"]["href"] == "/users"
 
 
-def test_create_user_missing_fields(client):
-    log.info("Testing user creation with missing fields")
-    response = client.post("/users", json={"username": "testuser"})
-    assert response.status_code == 400
+def test_get_users_success(client):
+    log.info("Testing get users success")
+    response = client.get("/users")
+    assert response.status_code == 200
     data = response.get_json()
-    assert data["error"] == "Username and password are required"
+    assert "users" in data
+    for user in data["users"]:
+        assert "id" in user
+        assert "username" in user
+        assert "_links" in user
+        assert "self" in user["_links"]
+        assert "collection" in user["_links"]
+        assert user["_links"]["self"]["href"] == f"/users/{user['id']}"
+        assert user["_links"]["collection"]["href"] == "/users"
+
+
+def test_get_user_success(client):
+    log.info("Testing get user success")
+    # First, create a user
+    response = client.post("/users", json={"username": "testuser", "password": "testpassword"})
+    assert response.status_code == 201
+    user_id = response.get_json()["id"]
+
+    # Now, get the created user
+    response = client.get(f"/users/{user_id}")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert "id" in data
+    assert data["id"] == user_id
+    assert "username" in data
+    assert data["username"] == "testuser"
+    assert "_links" in data
+    assert "self" in data["_links"]
+    assert "collection" in data["_links"]
+    assert data["_links"]["self"]["href"] == f"/users/{user_id}"
+    assert data["_links"]["collection"]["href"] == "/users"

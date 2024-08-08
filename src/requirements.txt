@@ -9,3 +9,4 @@ pytest-flask
 python-dotenv
 psycopg2-binary
 sqlalchemy
+pip install flask_hal
