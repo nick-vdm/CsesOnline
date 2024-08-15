@@ -1,33 +1,41 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  web:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-    ports:
-      - "5000:5000"
-    environment:
-      - FLASK_APP=app.main
-      - FLASK_ENV=development
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
-    depends_on:
-      - db
-    volumes:
-      - web_logs:/var/log/web
-
-  db:
-    image: postgres:13
+  postgres:
+    image: postgres:14
+    container_name: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - ../sql:/docker-entrypoint-initdb.d
-      - db_data:/var/lib/postgresql/data
-      - db_logs:/var/log/postgresql
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  backend:
+    image: # nick-vdm-dev/backend:latest
+    container_name: backend
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    volumes:
+      - backend_data:/app/files
+    networks:
+      - app-network
+
+  frontend:
+    image: # nick-vdm-dev/frontend:latest
+    container_name: frontend
+    ports:
+      - "80:80"
+    environment:
+      BACKEND_URL: ${BACKEND_URL}
+    networks:
+      - app-network
 
 volumes:
-  db_data:
-  web_logs:
-  db_logs:
+  postgres_data:
+  backend_data:
+
+networks:
+  app-network:

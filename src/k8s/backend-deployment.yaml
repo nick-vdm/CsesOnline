@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: your-private-registry/backend:latest
+          env:
+            - name: DATABASE_URL
+              value: postgres://postgres:${POSTGRES_PASSWORD}@postgres-service:5432/${POSTGRES_DB}
+          volumeMounts:
+            - name: backend-storage
+              mountPath: /app/files
+      volumes:
+        - name: backend-storage
+          persistentVolumeClaim:
+            claimName: backend-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: backend
