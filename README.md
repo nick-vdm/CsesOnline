@@ -8,5 +8,3 @@ orchestrating and scaling the containers.
 A high level overview of the project is like this:
 
 ![image](https://github.com/user-attachments/assets/88ba61eb-2735-42ca-a3da-ee9dd91ec42c)
-
-It's missing specific details and focused on the idea of how this is structured
