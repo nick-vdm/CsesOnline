@@ -7,5 +7,6 @@ orchestrating and scaling the containers.
 
 A high level overview of the project is like this:
 
-![image](https://github.com/user-attachments/assets/f7825b00-5722-4bc2-b60b-7938d59b6f78)
+![image](https://github.com/user-attachments/assets/6ea76ab3-1a6d-4108-8d8b-3d986fc7e284)
+
 
