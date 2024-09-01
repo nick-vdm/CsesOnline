@@ -1,125 +1,125 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .container {
-  display: flex;
-  height: 100vh;
+    display: flex;
+    height: 100vh;
 }
 
 .left-pane {
-  overflow-y: auto;
-  overflow-x: hidden;
-  background-color: #282c34;
-  color: #abb2bf;
-  padding: 16px;
-  text-overflow: ellipsis;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #282c34;
+    color: #abb2bf;
+    padding: 16px;
+    text-overflow: ellipsis;
 }
 
 .left-pane::-webkit-scrollbar {
-  width: 12px;
+    width: 12px;
 }
 
 .left-pane::-webkit-scrollbar-track {
-  background: #282c34;
+    background: #282c34;
 }
 
 .left-pane::-webkit-scrollbar-thumb {
-  background-color: #4b5263;
-  border-radius: 6px;
-  border: 3px solid #282c34;
+    background-color: #4b5263;
+    border-radius: 6px;
+    border: 3px solid #282c34;
 }
 
 .right-pane {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .code-editor {
-  flex-grow: 1;
-  height: 100%;
-  background-color: #282c34;
+    flex-grow: 1;
+    height: 100%;
+    background-color: #282c34;
 }
 
 .container {
-  display: flex;
-  position: relative;
-  height: 100vh;
+    display: flex;
+    position: relative;
+    height: 100vh;
 }
 
 .resizable .react-resizable-handle {
-  position: absolute;
-  width: 10px;
-  height: 100%;
-  right: 0;
-  top: 0;
-  cursor: col-resize;
-  background-color: rgba(0, 0, 0, 0.1);
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    cursor: col-resize;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* App.css */
 .container {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .pane {
-  overflow: auto;
-  height: 100%;
+    overflow: auto;
+    height: 100%;
 }
 
 .divider {
-  width: 5px;
-  cursor: ew-resize;
-  background-color: #ccc;
-  position: relative;
-  z-index: 1;
+    width: 5px;
+    cursor: ew-resize;
+    background-color: #ccc;
+    position: relative;
+    z-index: 1;
 }
 
 .divider:hover {
-  background-color: #888;
+    background-color: #888;
 }
 
 .pane-content {
-  padding: 20px;
-  box-sizing: border-box;
-  height: 100%;
-  overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+    overflow-y: auto;
 }

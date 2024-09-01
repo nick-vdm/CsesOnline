@@ -55,7 +55,6 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/react-resizable": "^3.0.8",
-    "eslint": "^9.9.1",
     "prettier": "^3.3.3"
   }
 }
