@@ -88,7 +88,7 @@ def test_get_users_success(client, new_user):
 
 def test_get_user_success(client, new_user):
     log.info("Testing get users success")
-    response = client.get(f"/api/users/{new_user.id}")
+    response = client.get(f"/api/users/{new_user.username}")
     assert response.status_code == 200
     data = response.get_json()
 

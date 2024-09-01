@@ -3,6 +3,7 @@ import logging
 from flask import Blueprint, jsonify, url_for, request
 from flask_hal import document, link
 
+from code import User
 from code.extensions import db
 from code.models.submissions import Submission
 from code.utils.auth import token_required

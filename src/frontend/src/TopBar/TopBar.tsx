@@ -32,7 +32,7 @@ const TopBar: React.FC<TopBarProps> = ({ isAuthenticated }) => {
      onMouseLeave={(e) => (e.currentTarget.style.color = '#61dafb')}
     >
      <h1 style={{ margin: 0, fontSize: '24px', color: 'inherit' }}>
-      CsesJourney
+       CsesOnline
      </h1>
     </Link>
     <Link
@@ -52,7 +52,7 @@ const TopBar: React.FC<TopBarProps> = ({ isAuthenticated }) => {
     </Link>
    </div>
    <Link
-    to={isAuthenticated ? PATHS.PROFILE : PATHS.AUTH_LOGIN}
+    to={isAuthenticated ? PATHS.PROFILE + "/" + localStorage.getItem('username') : PATHS.AUTH_LOGIN}
     style={{
      color: '#61dafb',
      textDecoration: 'none',

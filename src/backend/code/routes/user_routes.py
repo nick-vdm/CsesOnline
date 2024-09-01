@@ -7,6 +7,7 @@ from flask import Blueprint, request, jsonify, url_for, current_app
 from flask_hal import document, link
 
 from code.extensions import db
+from code.models.submissions import Submission
 from code.models.user import User
 
 bp = Blueprint("user_routes", __name__)
@@ -45,7 +46,7 @@ def create_user():
     return jsonify(response.to_dict()), 201
 
 
-@bp.route("/api//users", methods=["GET"])
+@bp.route("/api/users", methods=["GET"])
 def get_users():
     users = User.query.all()
     user_collection = [
@@ -66,12 +67,12 @@ def get_users():
     return jsonify(response.to_dict())
 
 
-@bp.route("/api/users/<int:user_id>", methods=["GET"])
-def get_user(user_id):
-    user = db.session.get(User, user_id)
+@bp.route("/api/users/<string:username>", methods=["GET"])
+def get_user(username):
+    user = User.query.filter_by(username=username).first()
 
     if not user:
-        return jsonify({"error": f"User {user_id} not found"}), 404
+        return jsonify({"error": f"User {username} not found"}), 404
 
     response = document.Document(
         data={
@@ -111,3 +112,37 @@ def log_user_in():
         return jsonify({"message": "Login successful", "token": token}), 200
 
     return jsonify({"error": "Invalid username or password"}), 409
+
+
+@bp.route("/api/users/<string:username>/submissions", methods=["GET"])
+def get_user_submissions(username):
+    user = User.query.filter_by(username=username).first()
+
+    if not user:
+        return jsonify({"error": f"User {username} not found"}), 404
+
+    submissions = Submission.query.filter_by(linked_user=user.id).all()
+    submission_collection = [
+        document.Document(
+            data={
+                "id": submission.id,
+                "program_lang": submission.program_lang,
+                "linked_user": submission.linked_user,
+                "problem_id": submission.problem_id,
+                "status": submission.status,
+                "result": submission.result,
+                "result_time_ms": submission.result_time_ms,
+                "result_memory_kb": submission.result_memory_kb,
+            },
+            links=link.Collection(
+                link.Link("collection", href=url_for("submission_routes.get_user_submissions", username=username)),
+            ),
+        ).to_dict()
+        for submission in submissions
+    ]
+
+    response = document.Document(
+        data={"submissions": submission_collection},
+        links=link.Collection(),
+    )
+    return jsonify(response.to_dict())

@@ -133,6 +133,7 @@ const AuthPageComponent: React.FC<AuthPageComponentProps> = ({
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token);
+        localStorage.setItem('username', username);
         onAuthSuccess(data.token);
         navigate('/');
       } else if (response.status === 409) {
