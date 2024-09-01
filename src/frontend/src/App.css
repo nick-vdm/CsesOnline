@@ -123,6 +123,7 @@
     height: 100%;
     overflow-y: auto;
 }
+
 /* Add styles for the titles */
 h1#input, h1#output, h1#constraints {
     font-size: 1.5em; /* Adjust the size as needed */
@@ -137,4 +138,19 @@ h1#input, h1#output, h1#constraints {
     display: block;
     text-align: center;
     margin: 1em 0;
+}
+
+.editor-settings {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.code-editor {
+    height: 400px; /* Adjust as needed */
+}
+
+.test-cases {
+    margin-top: 10px;
+    /* Add styles for the test cases component */
 }
