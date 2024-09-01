@@ -4,6 +4,7 @@ import os
 import time
 import logging
 import logging.config
+import os
 from flask_hal import HAL
 
 
@@ -21,6 +22,7 @@ class RequestLogFilter(logging.Filter):
 
 
 def create_app():
+    print("Looking from", os.getcwd())
     logging.config.fileConfig("../../logging.conf")
     log = logging.getLogger("app")
     log.info("Creating app")

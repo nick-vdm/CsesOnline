@@ -10,7 +10,6 @@ python-dotenv
 psycopg2-binary
 sqlalchemy
 flask_hal
-bcrypt
 PyJWT
 requests
 bs4
