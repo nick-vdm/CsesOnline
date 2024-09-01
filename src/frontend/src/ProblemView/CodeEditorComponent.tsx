@@ -11,7 +11,7 @@ const CodeEditor: React.FC<ProblemViewViewProps> = ({ problemName }) => {
   if (!editorRef.current) return;
 
   const view = new EditorView({
-   doc: `// Write your solution here for ${problemName}\n`,
+   doc: `// Write your solution here for ${problemName}. \n// Input will come through STDIN and you can print your answer\n`,
    extensions: [basicSetup, javascript(), oneDark],
    parent: editorRef.current,
   });

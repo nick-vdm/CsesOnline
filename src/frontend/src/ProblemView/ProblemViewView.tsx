@@ -7,21 +7,18 @@ import 'katex/dist/katex.min.css';
 import katex from 'katex';
 
 interface ProblemViewViewProps {
-  problemId: string;
+  problemData: {
+    id: number;
+    title: string;
+    difficulty: string;
+    problem_description: string;
+    tags: string[];
+  };
 }
 
-interface ProblemData {
-  id: number;
-  title: string;
-  difficulty: string;
-  problem_description: string;
-  tags: string[];
-}
-
-const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemId }) => {
+const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemData }) => {
   const [dividerPosition, setDividerPosition] = useState(50); // initial position at 50%
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [problemData, setProblemData] = useState<ProblemData | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -29,25 +26,6 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemId }) => {
       setIsAuthenticated(true);
     }
   }, []);
-
-  useEffect(() => {
-    const fetchProblemData = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/api/problems/${problemId}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch problem data');
-        }
-        const data = await response.json();
-        setProblemData(data);
-      } catch (error) {
-        console.error('Error fetching problem data:', error);
-      }
-    };
-
-    if (isAuthenticated) {
-      fetchProblemData();
-    }
-  }, [isAuthenticated, problemId]);
 
   useEffect(() => {
     if (problemData) {
@@ -85,15 +63,11 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemId }) => {
       {isAuthenticated ? (
         <div className="container">
           <div className="pane left-pane" style={{ width: `${dividerPosition}%` }}>
-            {problemData ? (
-              <div>
-                <h1>{problemData.title}</h1>
-                <div dangerouslySetInnerHTML={{ __html: problemData.problem_description }} />
-                <div style={{ height: '200px' }}> </div>
-              </div>
-            ) : (
-              <p>Loading problem...</p>
-            )}
+            <div>
+              <h1>{problemData.title}</h1>
+              <div dangerouslySetInnerHTML={{ __html: problemData.problem_description }} />
+              <div style={{ height: '200px' }}> </div>
+            </div>
           </div>
           <div
             className="divider"
