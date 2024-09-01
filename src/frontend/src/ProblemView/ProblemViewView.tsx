@@ -3,7 +3,8 @@ import CodeEditor from './CodeEditorComponent';
 import AuthPage from '../Auth/AuthPageComponent';
 import 'react-resizable/css/styles.css';
 import '../App.css';
-import { MathJax, MathJaxContext } from 'better-react-mathjax';
+import 'katex/dist/katex.min.css';
+import katex from 'katex';
 
 interface ProblemViewViewProps {
  problemId: string;
@@ -48,6 +49,18 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemId }) => {
   }
  }, [isAuthenticated, problemId]);
 
+ useEffect(() => {
+  if (problemData) {
+   const mathElements = document.getElementsByClassName('math');
+   for (let element of mathElements) {
+    katex.render(element.textContent || '', element as HTMLElement, {
+     displayMode: element.classList.contains('display'),
+     throwOnError: false,
+    });
+   }
+  }
+ }, [problemData]);
+
  const handleMouseDown = () => {
   document.addEventListener('mousemove', handleMouseMove);
   document.addEventListener('mouseup', handleMouseUp);
@@ -75,17 +88,7 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemId }) => {
         {problemData ? (
           <div>
            <h1>{problemData.title}</h1>
-           <MathJaxContext config={{
-            tex2jax: {
-             inlineMath: [['$', '$'], ['\\(', '\\)']],
-             displayMath: [['$$', '$$'], ['\\[', '\\]']],
-             processClass: 'math display'
-            }
-           }}>
-            <MathJax>
-             <div dangerouslySetInnerHTML={{ __html: problemData.problem_description }} />
-            </MathJax>
-           </MathJaxContext>
+           <div dangerouslySetInnerHTML={{ __html: problemData.problem_description }} />
           </div>
         ) : (
           <p>Loading problem...</p>

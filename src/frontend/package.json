@@ -19,6 +19,7 @@
     "better-react-mathjax": "^2.0.3",
     "codemirror": "^6.0.1",
     "cors": "^2.8.5",
+    "katex": "^0.16.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-resizable": "^3.0.5",
@@ -56,6 +57,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/katex": "^0.16.7",
     "@types/react-resizable": "^3.0.8",
     "prettier": "^3.3.3"
   }
