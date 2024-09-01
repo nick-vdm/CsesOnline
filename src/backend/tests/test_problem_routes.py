@@ -48,7 +48,7 @@ def new_problem():
 
 def test_get_problems_success(client, new_problem):
     log.info("Testing get problems success")
-    response = client.get("/problems")
+    response = client.get("/api/problems")
     assert response.status_code == 200
     log.info("Got back %s", response)
     data = response.get_json()
@@ -68,7 +68,7 @@ def test_get_problems_success(client, new_problem):
 
 def test_get_problem_success(client, new_problem):
     log.info("Testing get problem by ID success")
-    response = client.get(f"/problems/{new_problem.id}")
+    response = client.get(f"/api/problems/{new_problem.id}")
     assert response.status_code == 200
 
     data = response.get_json()
@@ -82,5 +82,5 @@ def test_get_problem_success(client, new_problem):
     assert "_links" in data
     assert "self" in data["_links"]
     assert "collection" in data["_links"]
-    goal = len(f"/problems/{data['id']}")
-    assert data["_links"]["self"]["href"][-goal:] == f"/problems/{data['id']}"
+    goal = len(f"/api/problems/{data['id']}")
+    assert data["_links"]["self"]["href"][-goal:] == f"/api/problems/{data['id']}"

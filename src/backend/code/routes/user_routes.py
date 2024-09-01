@@ -45,7 +45,7 @@ def create_user():
     return jsonify(response.to_dict()), 201
 
 
-@bp.route("/users", methods=["GET"])
+@bp.route("/api//users", methods=["GET"])
 def get_users():
     users = User.query.all()
     user_collection = [
@@ -66,7 +66,7 @@ def get_users():
     return jsonify(response.to_dict())
 
 
-@bp.route("/users/<int:user_id>", methods=["GET"])
+@bp.route("/api/users/<int:user_id>", methods=["GET"])
 def get_user(user_id):
     user = db.session.get(User, user_id)
 
@@ -85,7 +85,7 @@ def get_user(user_id):
     return jsonify(response.to_dict())
 
 
-@bp.route("/login", methods=["POST"])
+@bp.route("/api/login", methods=["POST"])
 def log_user_in():
     data = request.get_json()
     username = data.get("username")

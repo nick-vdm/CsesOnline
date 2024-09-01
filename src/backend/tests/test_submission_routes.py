@@ -77,7 +77,7 @@ def new_submission(new_user, new_problem):
 
 def test_get_submissions_success(client, new_submission):
     log.info("Testing get submissions success")
-    response = client.get("/submissions")
+    response = client.get("/api/submissions")
     assert response.status_code == 200
     data = response.get_json()
     assert "submissions" in data
@@ -98,7 +98,7 @@ def test_get_submissions_success(client, new_submission):
 
 def test_get_submission_success(client, new_submission):
     log.info("Testing get submission success")
-    response = client.get(f"/submissions/{new_submission.id}")
+    response = client.get(f"/api/submissions/{new_submission.id}")
     assert response.status_code == 200
     data = response.get_json()
 
@@ -116,7 +116,7 @@ def test_get_submission_success(client, new_submission):
 
 
 def test_create_submission_success(client, new_user, new_problem):
-    response = client.post("/login", json={"username": "testuser", "password": "testpassword"})
+    response = client.post("/api/login", json={"username": "testuser", "password": "testpassword"})
     assert response.status_code == 200
     data = response.get_json()
     token = data["token"]
@@ -134,7 +134,7 @@ def test_create_submission_success(client, new_user, new_problem):
     }
 
     headers = {"Authorization": f"Bearer {token}"}
-    response = client.post("/create_submission", json=payload, headers=headers)
+    response = client.post("/api/create_submission", json=payload, headers=headers)
     assert response.status_code == 201
     data = response.get_json()
     assert data["message"] == "Submission created successfully!"

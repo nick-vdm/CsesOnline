@@ -56,14 +56,14 @@ def test_create_user_success(client):
     assert "_links" in data
     assert "self" in data["_links"]
     assert "collection" in data["_links"]
-    goal = len(f"/users/{data['id']}")
+    goal = len(f"/api/users/{data['id']}")
     # TODO bug here - this is just /users/
-    # assert data["_links"]["self"]["href"][-goal:] == f"/users/{data['id']}"
+    # assert data["_links"]["self"]["href"][-goal:] == f"/api/users/{data['id']}"
 
 
 def test_login_user_success(client, new_user):
     log.info("Testing user login success")
-    response = client.post("/login", json={"username": "testuser", "password": "testpassword"})
+    response = client.post("/api/login", json={"username": "testuser", "password": "testpassword"})
     assert response.status_code == 200
     data = response.get_json()
     log.info("Got back %s", data)
@@ -73,7 +73,7 @@ def test_login_user_success(client, new_user):
 
 def test_get_users_success(client, new_user):
     log.info("Testing get users success")
-    response = client.get("/users")
+    response = client.get("/api/users")
     assert response.status_code == 200
     data = response.get_json()
     assert "users" in data
@@ -88,7 +88,7 @@ def test_get_users_success(client, new_user):
 
 def test_get_user_success(client, new_user):
     log.info("Testing get users success")
-    response = client.get(f"/users/{new_user.id}")
+    response = client.get(f"/api/users/{new_user.id}")
     assert response.status_code == 200
     data = response.get_json()
 

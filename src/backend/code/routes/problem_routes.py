@@ -1,14 +1,16 @@
-from flask import Blueprint, jsonify, url_for
-from code.models import Problem
-from code.extensions import db
-from flask_hal import document, link
 import logging
+
+from flask import Blueprint, jsonify, url_for
+from flask_hal import document, link
+
+from code.extensions import db
+from code.models import Problem
 
 bp = Blueprint("problem_routes", __name__)
 log = logging.getLogger("code")
 
 
-@bp.route("/problems", methods=["GET"])
+@bp.route("/api/problems", methods=["GET"])
 def get_problems():
     problems = Problem.query.all()
     problems_collection = [
@@ -30,7 +32,7 @@ def get_problems():
     return jsonify(response.to_dict())
 
 
-@bp.route("/problems/<int:problem_id>", methods=["GET"])
+@bp.route("/api/problems/<int:problem_id>", methods=["GET"])
 def get_problem(problem_id):
     problem = db.session.get(Problem, problem_id)
 
