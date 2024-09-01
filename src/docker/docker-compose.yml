@@ -19,7 +19,7 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     volumes:
-      - backend_data:/app/files
+      - backend_data:/code/files
     networks:
       - app-network
 

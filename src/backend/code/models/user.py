@@ -1,4 +1,4 @@
-from app.extensions import db
+from code.extensions import db
 from .abstract_base_model import BaseModel
 
 

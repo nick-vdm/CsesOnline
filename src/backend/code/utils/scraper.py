@@ -10,7 +10,7 @@ from io import BytesIO
 print(os.getcwd())
 import requests
 from bs4 import BeautifulSoup
-from app.models.problem import Problem as DBProblem, DifficultyEnum
+from code.models.problem import Problem as DBProblem, DifficultyEnum
 
 base_url = "https://cses.fi"
 

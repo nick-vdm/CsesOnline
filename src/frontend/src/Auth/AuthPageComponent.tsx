@@ -96,12 +96,14 @@ const AuthPageComponent: React.FC<AuthPageComponentProps> = ({
  const handleSubmit = async (e: FormEvent) => {
   e.preventDefault();
   setError(null); // Reset error message
-  const response = await fetch('/api/auth', {
+  console.log(process.env.REACT_APP_BACKEND_API);
+  const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/api/signup`, {
+
    method: 'POST',
    headers: {
     'Content-Type': 'application/json',
    },
-   body: JSON.stringify({ username, password }),
+   body: JSON.stringify({ username: username, password: password }),
   });
 
   if (response.ok) {

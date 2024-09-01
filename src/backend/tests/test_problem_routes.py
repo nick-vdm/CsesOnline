@@ -1,7 +1,7 @@
 import pytest
-from app.app import create_app
-from app.extensions import db
-from app.models.problem import Problem, DifficultyEnum
+from code.app import create_app
+from code.extensions import db
+from code.models.problem import Problem, DifficultyEnum
 from dotenv import load_dotenv
 from sqlalchemy import text
 import os
@@ -9,7 +9,7 @@ import logging
 
 load_dotenv()
 
-log = logging.getLogger("app")
+log = logging.getLogger("code")
 
 
 @pytest.fixture

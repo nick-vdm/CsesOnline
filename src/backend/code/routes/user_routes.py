@@ -1,17 +1,19 @@
+import datetime
+import logging
+
+import bcrypt
+import jwt
 from flask import Blueprint, request, jsonify, url_for, current_app
 from flask_hal import document, link
-from app.models.user import User
-from app.extensions import db
-import logging
-import jwt
-import datetime
-import bcrypt
+
+from code.extensions import db
+from code.models.user import User
 
 bp = Blueprint("user_routes", __name__)
-log = logging.getLogger("app")
+log = logging.getLogger("code")
 
 
-@bp.route("/users", methods=["POST"])
+@bp.route("/api/signup", methods=["POST"])
 def create_user():
     data = request.get_json()
     username = data.get("username")
@@ -19,6 +21,11 @@ def create_user():
 
     if not username or not password:
         return jsonify({"error": "Username and password are required"}), 400
+
+    # check if user already exists
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return jsonify({"error": "User already exists"}), 400
 
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
@@ -77,6 +84,7 @@ def get_user(user_id):
     )
     return jsonify(response.to_dict())
 
+
 @bp.route("/login", methods=["POST"])
 def log_user_in():
     data = request.get_json()
@@ -93,7 +101,7 @@ def log_user_in():
     if bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
         # Ensure SECRET_KEY is a string
         secret_key = str(current_app.config["SECRET_KEY"])
-        
+
         # Generate JWT token with timezone-aware datetime
         token = jwt.encode(
             {"user_id": user.id, "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)},

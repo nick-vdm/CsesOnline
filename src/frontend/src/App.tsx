@@ -41,7 +41,19 @@ const App: React.FC = () => {
     <Route path="/problem/:problemId" element={<ProblemViewWrapper />} />
     <Route path={PATHS.PROFILE} element={<Profile />} />
     <Route
+     // pretty sure I should be able to combine these two routes into one with
+     // two different paths specified, but whatever.
      path={PATHS.AUTH_SIGNUP}
+     element={
+      isAuthenticated ? (
+       <Navigate to="/" />
+      ) : (
+       <AuthPage onAuthSuccess={handleAuthSuccess} />
+      )
+     }
+    />
+    <Route
+     path={PATHS.AUTH_LOGIN}
      element={
       isAuthenticated ? (
        <Navigate to="/" />

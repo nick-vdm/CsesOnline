@@ -1,10 +1,10 @@
 import pytest
-from app.app import create_app
+from code.app import create_app
 import bcrypt
-from app.extensions import db
-from app.models.submissions import Submission
-from app.models.user import User
-from app.models.problem import Problem
+from code.extensions import db
+from code.models.submissions import Submission
+from code.models.user import User
+from code.models.problem import Problem
 from dotenv import load_dotenv
 from sqlalchemy import text
 import os
@@ -12,7 +12,7 @@ import logging
 
 load_dotenv()
 
-log = logging.getLogger("app")
+log = logging.getLogger("code")
 
 
 @pytest.fixture

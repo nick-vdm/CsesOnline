@@ -25,7 +25,7 @@ spec:
         - containerPort: 8000
         volumeMounts:
         - name: backend-storage
-          mountPath: /app/data
+          mountPath: /code/data
       volumes:
       - name: backend-storage
         persistentVolumeClaim:

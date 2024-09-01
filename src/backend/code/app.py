@@ -1,11 +1,15 @@
-from app.extensions import db
-from flask import Flask, request, has_request_context, g
 import os
+print("My working dir is,", os.getcwd())
+
+from code.extensions import db
+from dotenv import load_dotenv
+from flask import Flask, request, has_request_context, g
 import time
 import logging
 import logging.config
 import os
-from flask_hal import HAL
+
+from flask_cors import CORS
 
 
 class RequestLogFilter(logging.Filter):
@@ -23,11 +27,14 @@ class RequestLogFilter(logging.Filter):
 
 def create_app():
     print("Looking from", os.getcwd())
-    logging.config.fileConfig("../../logging.conf")
-    log = logging.getLogger("app")
-    log.info("Creating app")
+    print(f'Logging folder: {os.getenv('LOGGING_FOLDER')}')
+    logging.config.fileConfig("logging.conf")
+    log = logging.getLogger("code")
+    log.info("Creating code")
 
     app = Flask(__name__)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     db.init_app(app)
@@ -49,11 +56,22 @@ def create_app():
         return response
 
     with app.app_context():
-        from .routes import user_routes, problem_routes, submission_routes
+        from code.routes import user_routes, problem_routes, submission_routes
 
         app.register_blueprint(user_routes.bp)
         app.register_blueprint(problem_routes.bp)
         app.register_blueprint(submission_routes.bp)
 
     log.info("App created")
+
+    print("Database URI is", app.config["SQLALCHEMY_DATABASE_URI"])
     return app
+
+
+if __name__ == '__main__':
+    load_dotenv()
+    app = create_app()
+    app.config["TESTING"] = False
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    app.run(host='0.0.0.0', port=5000)
+

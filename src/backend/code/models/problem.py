@@ -1,5 +1,5 @@
 from enum import Enum
-from app.extensions import db
+from code.extensions import db
 
 
 class DifficultyEnum(Enum):

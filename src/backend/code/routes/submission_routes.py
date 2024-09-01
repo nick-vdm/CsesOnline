@@ -1,12 +1,12 @@
 from flask import Blueprint, jsonify, url_for, request
 from flask_hal import document, link
-from app.models.submissions import Submission
-from app.extensions import db
+from code.models.submissions import Submission
+from code.extensions import db
 import logging
-from app.utils.auth import token_required
+from code.utils.auth import token_required
 
 bp = Blueprint("submission_routes", __name__)
-log = logging.getLogger("app")
+log = logging.getLogger("code")
 
 
 @bp.route("/submissions", methods=["GET"])

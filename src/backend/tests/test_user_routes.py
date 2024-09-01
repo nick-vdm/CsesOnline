@@ -1,8 +1,8 @@
 import pytest
 import bcrypt
-from app.app import create_app
-from app.extensions import db
-from app.models.user import User
+from code.app import create_app
+from code.extensions import db
+from code.models.user import User
 from dotenv import load_dotenv
 from sqlalchemy import text
 import os
@@ -10,7 +10,7 @@ import logging
 
 load_dotenv()
 
-log = logging.getLogger("app")
+log = logging.getLogger("code")
 
 
 @pytest.fixture
@@ -47,7 +47,7 @@ def new_user():
 
 def test_create_user_success(client):
     log.info("Testing user creation success")
-    response = client.post("/users", json={"username": "testuser", "password": "testpassword"})
+    response = client.post("/api/signup", json={"username": "testuser", "password": "testpassword"})
     assert response.status_code == 201
     data = response.get_json()
     log.info("Got back %s", data)

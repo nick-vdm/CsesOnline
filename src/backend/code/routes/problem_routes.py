@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify, url_for
-from app.models import Problem
-from app.extensions import db
+from code.models import Problem
+from code.extensions import db
 from flask_hal import document, link
 import logging
 
 bp = Blueprint("problem_routes", __name__)
-log = logging.getLogger("app")
+log = logging.getLogger("code")
 
 
 @bp.route("/problems", methods=["GET"])
