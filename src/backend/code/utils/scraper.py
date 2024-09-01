@@ -152,10 +152,10 @@ def save_test_cases(folder_path, data_dict: Dict[str, str]):
 
 if __name__ == "__main__":
     for problem in next_problem_link():
+        print(problem)
         content = scrape_problem_description(problem)
         problem = insert_or_update_problem(problem)
         tests = scrape_test_cases(problem)
         save_test_cases(os.getenv("SAVE_PATH") + "/" + problem.tests_id, tests)
         print(str(problem))
         print("Content", len(content))
-    pass

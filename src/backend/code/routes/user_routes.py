@@ -7,6 +7,7 @@ from flask import Blueprint, request, jsonify, url_for, current_app
 from flask_hal import document, link
 
 from code.extensions import db
+from code.models import Problem
 from code.models.submissions import Submission
 from code.models.user import User
 
@@ -122,10 +123,12 @@ def get_user_submissions(username):
         return jsonify({"error": f"User {username} not found"}), 404
 
     submissions = Submission.query.filter_by(linked_user=user.id).all()
+
     submission_collection = [
         document.Document(
             data={
                 "id": submission.id,
+                "title": Problem.query.filter_by(id=submission.problem_id).first().title,
                 "program_lang": submission.program_lang,
                 "linked_user": submission.linked_user,
                 "problem_id": submission.problem_id,

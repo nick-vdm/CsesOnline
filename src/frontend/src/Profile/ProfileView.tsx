@@ -5,6 +5,7 @@ import styled from 'styled-components';
 interface Submission {
   id: number;
   program_lang: string;
+  title: string;
   problem_id: number;
   status: string;
   result: string;
@@ -69,7 +70,7 @@ const ProfileView: React.FC = () => {
           <ul>
             {submissions.map((submission) => (
               <li key={submission.id}>
-                Problem ID: {submission.problem_id} - Status: {submission.status} - Result: {submission.result}
+                {submission.problem_id}:{submission.title} - Status: {submission.status} - Result: {submission.result}
               </li>
             ))}
           </ul>
