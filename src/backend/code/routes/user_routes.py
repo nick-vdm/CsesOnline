@@ -138,7 +138,7 @@ def get_user_submissions(username):
                 "result_memory_kb": submission.result_memory_kb,
             },
             links=link.Collection(
-                link.Link("collection", href=url_for("submission_routes.get_user_submissions", username=username)),
+                link.Link("collection", href=url_for("user_routes.get_user_submissions", username=username)),
             ),
         ).to_dict()
         for submission in submissions

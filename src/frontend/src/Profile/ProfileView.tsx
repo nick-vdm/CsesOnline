@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 interface Submission {
   id: number;
@@ -13,11 +13,47 @@ interface Submission {
   result_memory_kb: number;
 }
 
+const GlobalStyle = createGlobalStyle`
+    body {
+        background-color: #282c34;
+        color: #abb2bf;
+        font-family: 'Fira Code', monospace;
+    }
+`;
+
+const Container = styled.div`
+    padding: 20px;
+    background-color: #282c34;
+    color: #abb2bf;
+`;
+
+const Title = styled.h1`
+    color: #abb2bf;
+`;
+
+const Subtitle = styled.h2`
+    color: #abb2bf;
+`;
+
 const ErrorMessage = styled.div`
     color: red;
     font-size: 1.5rem;
     text-align: center;
     margin-top: 20px;
+`;
+
+const SubmissionList = styled.ul`
+    list-style-type: none;
+    padding: 0;
+`;
+
+const SubmissionItem = styled.li`
+    background-color: #282c34;
+    color: #abb2bf;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #abb2bf;
+    border-radius: 5px;
 `;
 
 const ProfileView: React.FC = () => {
@@ -60,23 +96,22 @@ const ProfileView: React.FC = () => {
   }
 
   return (
-    <div>
-      <div style={{ padding: '20px' }}>
-        <h1>{username}'s Profile</h1>
-        <h2>Problems Solved</h2>
-        {submissions.length === 0 ? (
-          <div>No problems solved!</div>
-        ) : (
-          <ul>
-            {submissions.map((submission) => (
-              <li key={submission.id}>
-                {submission.problem_id}:{submission.title} - Status: {submission.status} - Result: {submission.result}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+    <Container>
+      <GlobalStyle />
+      <Title>{username}'s Profile</Title>
+      <Subtitle>Problems Solved</Subtitle>
+      {submissions.length === 0 ? (
+        <div>No problems solved!</div>
+      ) : (
+        <SubmissionList>
+          {submissions.map((submission) => (
+            <SubmissionItem key={submission.id}>
+              {submission.problem_id}: {submission.title} - Status: {submission.status} - Result: {submission.result}
+            </SubmissionItem>
+          ))}
+        </SubmissionList>
+      )}
+    </Container>
   );
 };
 
