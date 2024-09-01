@@ -14,7 +14,7 @@ const ProblemViewWrapper: React.FC = () => {
     return <div>Problem ID is missing</div>;
   }
 
-  return <ProblemViewView problem={problemId} />;
+  return <ProblemViewView problemId={problemId} />;
 };
 
 const App: React.FC = () => {

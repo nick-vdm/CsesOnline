@@ -123,3 +123,18 @@
     height: 100%;
     overflow-y: auto;
 }
+/* Add styles for the titles */
+h1#input, h1#output, h1#constraints {
+    font-size: 1.5em; /* Adjust the size as needed */
+}
+
+/* Add styles for the math elements */
+.math.inline {
+    display: inline;
+}
+
+.math.display {
+    display: block;
+    text-align: center;
+    margin: 1em 0;
+}

@@ -1,3 +1,3 @@
 export interface ProblemViewViewProps {
- problem: string;
+ problemName: string;
 }

@@ -19,7 +19,7 @@ def get_problems():
                 "id": problem.id,
                 "title": problem.title,
                 "difficulty": problem.difficulty.value,
-                "problem_groups": problem.problem_group,
+                "problem_group": problem.problem_group,
             },
             links=link.Collection(
                 link.Link("collection", href=url_for("problem_routes.get_problems")),
@@ -45,7 +45,7 @@ def get_problem(problem_id):
             "title": problem.title,
             "difficulty": problem.difficulty.value,
             "problem_description": problem.problem_description,
-            "tags": problem.tags,
+            "problem_group": problem.problem_group,
         },
         links=link.Collection(
             link.Link("collection", href=url_for("problem_routes.get_problems")),

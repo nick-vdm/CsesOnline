@@ -4,14 +4,14 @@ import { oneDark } from '@codemirror/theme-one-dark';
 import React, { useEffect, useRef } from 'react';
 import { ProblemViewViewProps } from './types';
 
-const CodeEditor: React.FC<ProblemViewViewProps> = ({ problem }) => {
+const CodeEditor: React.FC<ProblemViewViewProps> = ({ problemName }) => {
  const editorRef = useRef<HTMLDivElement>(null);
 
  useEffect(() => {
   if (!editorRef.current) return;
 
   const view = new EditorView({
-   doc: `// Write your solution here for ${problem}\n`,
+   doc: `// Write your solution here for ${problemName}\n`,
    extensions: [basicSetup, javascript(), oneDark],
    parent: editorRef.current,
   });
@@ -19,7 +19,7 @@ const CodeEditor: React.FC<ProblemViewViewProps> = ({ problem }) => {
   return () => {
    view.destroy();
   };
- }, [problem]);
+ }, [problemName]);
 
  return <div ref={editorRef} className="code-editor" />;
 };
