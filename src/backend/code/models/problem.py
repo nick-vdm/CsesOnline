@@ -17,4 +17,4 @@ class Problem(db.Model):
     problem_description = db.Column(db.Text, nullable=False)
     problem_link = db.Column(db.Text, nullable=True)
     tests_id = db.Column(db.String(255), nullable=True)
-    tags = db.Column(db.ARRAY(db.String), nullable=False)
+    problem_group = db.Column(db.String, nullable=False)

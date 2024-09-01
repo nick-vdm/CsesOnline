@@ -82,7 +82,7 @@ def insert_or_update_problem(problem):
             difficulty=DifficultyEnum.EASY,
             problem_description=content,
             problem_link=base_url + problem.link,
-            tags=[],
+            problem_group=problem.group,
             tests_id=problem.tests_id,
         )
         session.add(new_problem)
