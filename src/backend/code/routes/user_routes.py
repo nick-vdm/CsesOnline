@@ -25,7 +25,7 @@ def create_user():
     # check if user already exists
     user = User.query.filter_by(username=username).first()
     if user:
-        return jsonify({"error": "User already exists"}), 400
+        return jsonify({"error": "User already exists"}), 409
 
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
@@ -96,7 +96,7 @@ def log_user_in():
 
     user = User.query.filter_by(username=username).first()
     if not user:
-        return jsonify({"error": "Invalid username or password"}), 401
+        return jsonify({"error": "Invalid username or password"}), 409
 
     if bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
         # Ensure SECRET_KEY is a string
@@ -110,4 +110,4 @@ def log_user_in():
         )
         return jsonify({"message": "Login successful", "token": token}), 200
 
-    return jsonify({"error": "Invalid username or password"}), 401
+    return jsonify({"error": "Invalid username or password"}), 409

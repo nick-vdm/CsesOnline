@@ -80,77 +80,110 @@ const ErrorMessage = styled.div`
 `;
 
 interface AuthPageComponentProps {
- onAuthSuccess: (token: string) => void;
+  onAuthSuccess: (token: string) => void;
 }
 
 const AuthPageComponent: React.FC<AuthPageComponentProps> = ({
-                                                              onAuthSuccess,
+                                                               onAuthSuccess,
                                                              }) => {
- const location = useLocation();
- const isLogin = location.pathname === PATHS.AUTH_LOGIN;
- const [username, setUsername] = useState<string>('');
- const [password, setPassword] = useState<string>('');
- const [error, setError] = useState<string | null>(null);
- const navigate = useNavigate();
+  const location = useLocation();
+  const isLogin = location.pathname === PATHS.AUTH_LOGIN;
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
- const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
-  setError(null); // Reset error message
-  console.log(process.env.REACT_APP_BACKEND_API);
-  const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/api/signup`, {
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null); // Reset error message
+    console.log(process.env.REACT_APP_BACKEND_API);
 
-   method: 'POST',
-   headers: {
-    'Content-Type': 'application/json',
-   },
-   body: JSON.stringify({ username: username, password: password }),
-  });
+    async function signup() {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/api/signup`, {
 
-  if (response.ok) {
-   const data = await response.json();
-   localStorage.setItem('token', data.token);
-   onAuthSuccess(data.token);
-   navigate('/');
-  } else {
-   const errorData = await response.json();
-   setError(errorData.message || 'An error occurred. Please try again.');
-  }
- };
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username, password: password }),
+      });
 
- return (
-  <PageContainer>
-   <FormContainer onSubmit={handleSubmit}>
-    <FormTitle>{isLogin ? 'Login' : 'Sign Up'}</FormTitle>
-    <FormGroup>
-     <FormLabel htmlFor="username">Username</FormLabel>
-     <FormInput
-      type="text"
-      id="username"
-      value={username}
-      onChange={(e) => setUsername(e.target.value)}
-     />
-    </FormGroup>
-    <FormGroup>
-     <FormLabel htmlFor="password">Password</FormLabel>
-     <FormInput
-      type="password"
-      id="password"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-     />
-    </FormGroup>
-    <SubmitButton type="submit">
-     {isLogin ? 'Login' : 'Sign Up'}
-    </SubmitButton>
-    {error && <ErrorMessage>{error}</ErrorMessage>}
-    <SwapLink href={isLogin ? PATHS.AUTH_SIGNUP : PATHS.AUTH_LOGIN}>
-     {isLogin
-      ? 'Don\'t have an account? Sign Up'
-      : 'Already have an account? Login'}
-    </SwapLink>
-   </FormContainer>
-  </PageContainer>
- );
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        onAuthSuccess(data.token);
+        navigate('/');
+      } else if (response.status === 409) {
+        setError('Username already exists. Please try another one.');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'An error occurred. Please try again.');
+      }
+    }
+
+    async function login() {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/api/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username, password: password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        onAuthSuccess(data.token);
+        navigate('/');
+      } else if (response.status === 409) {
+        setError('Username or password was incorrect. Please try again.');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'An error occurred. Please try again.');
+      }
+    }
+
+    if (isLogin) {
+      await login();
+    } else {
+      await signup();
+    }
+  };
+
+  return (
+    <PageContainer>
+      <FormContainer onSubmit={handleSubmit}>
+        <FormTitle>{isLogin ? 'Login' : 'Sign Up'}</FormTitle>
+        <FormGroup>
+          <FormLabel htmlFor="username">Username</FormLabel>
+          <FormInput
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <FormLabel htmlFor="password">Password</FormLabel>
+          <FormInput
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </FormGroup>
+        <SubmitButton type="submit">
+          {isLogin ? 'Login' : 'Sign Up'}
+        </SubmitButton>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <SwapLink href={isLogin ? PATHS.AUTH_SIGNUP : PATHS.AUTH_LOGIN}>
+          {isLogin
+            ? 'Don\'t have an account? Sign Up'
+            : 'Already have an account? Login'}
+        </SwapLink>
+      </FormContainer>
+    </PageContainer>
+  );
 };
 
 export default AuthPageComponent;
