@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 
 interface Submission {
@@ -8,9 +8,9 @@ interface Submission {
   title: string;
   problem_id: number;
   status: string;
-  result: string;
   result_time_ms: number;
   result_memory_kb: number;
+  submission_time: string; // New field for submission timestamp
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -42,22 +42,42 @@ const ErrorMessage = styled.div`
     margin-top: 20px;
 `;
 
-const SubmissionList = styled.ul`
-    list-style-type: none;
-    padding: 0;
+const Table = styled.table`
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #2e4451;
+    border-radius: 8px;
+    overflow: hidden;
 `;
 
-const SubmissionItem = styled.li`
-    background-color: #282c34;
+const TableHeader = styled.th`
+    background-color: #61afef;
+    color: #282c34;
+    padding: 15px;
+    border: 1px solid #4b5261;
+    text-align: left;
+`;
+
+const TableRow = styled.tr`
+    &:nth-child(even) {
+        background-color: #1b202b;
+    }
+    &:hover {
+        background-color: #3b5261;
+        cursor: pointer;
+    }
+`;
+
+const TableCell = styled.td`
+    padding: 15px;
+    border: 1px solid #4b5261;
     color: #abb2bf;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #abb2bf;
-    border-radius: 5px;
 `;
 
 const ProfileView: React.FC = () => {
   const { username } = useParams<{ username: string }>();
+  const navigate = useNavigate();
   const [userExists, setUserExists] = useState<boolean>(true);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -95,6 +115,10 @@ const ProfileView: React.FC = () => {
     return <ErrorMessage>User {username} not found</ErrorMessage>;
   }
 
+  const handleRowClick = (submissionId: number) => {
+    navigate(`/submission/${submissionId}`);
+  };
+
   return (
     <Container>
       <GlobalStyle />
@@ -103,13 +127,26 @@ const ProfileView: React.FC = () => {
       {submissions.length === 0 ? (
         <div>No problems solved!</div>
       ) : (
-        <SubmissionList>
+        <Table>
+          <thead>
+          <tr>
+            <TableHeader>Title</TableHeader>
+            <TableHeader>Language</TableHeader>
+            <TableHeader>Status</TableHeader>
+            <TableHeader>Submitted</TableHeader>
+          </tr>
+          </thead>
+          <tbody>
           {submissions.map((submission) => (
-            <SubmissionItem key={submission.id}>
-              {submission.problem_id}: {submission.title} - Status: {submission.status} - Result: {submission.result}
-            </SubmissionItem>
+            <TableRow key={submission.id} onClick={() => handleRowClick(submission.id)}>
+              <TableCell>{submission.title}</TableCell>
+              <TableCell>{submission.program_lang}</TableCell>
+              <TableCell>{submission.status}</TableCell>
+              <TableCell>{new Date(submission.submission_time).toLocaleString()}</TableCell>
+            </TableRow>
           ))}
-        </SubmissionList>
+          </tbody>
+        </Table>
       )}
     </Container>
   );

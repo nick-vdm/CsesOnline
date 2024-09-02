@@ -136,6 +136,7 @@ def get_user_submissions(username):
                 "result": submission.result,
                 "result_time_ms": submission.result_time_ms,
                 "result_memory_kb": submission.result_memory_kb,
+                "submission_time": submission.created,
             },
             links=link.Collection(
                 link.Link("collection", href=url_for("user_routes.get_user_submissions", username=username)),
