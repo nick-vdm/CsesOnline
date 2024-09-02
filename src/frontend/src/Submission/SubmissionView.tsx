@@ -36,6 +36,10 @@ const Detail = styled.div`
 
 const CodeBlockContainer = styled.div`
     margin-bottom: 10px;
+    border: 4px solid #3e4451; /* OneDark border color */
+    border-radius: 4px;
+    overflow: hidden; /* Ensures border-radius applies to CodeMirror content */
+    background-color: #2c313c; /* Matches CodeMirror background */
 `;
 
 interface Submission {
