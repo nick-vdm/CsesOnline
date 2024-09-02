@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CodeEditor from './CodeEditorComponent';
 import AuthPage from '../Auth/AuthPageComponent';
+import SubmissionsSummary from './SubmissionsSummary';
 import 'react-resizable/css/styles.css';
 import '../App.css';
 import 'katex/dist/katex.min.css';
@@ -107,6 +108,18 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemData }) => {
     }
   }, [problemData]);
 
+  useEffect(() => {
+    if (activeTab === 'description') {
+      const mathElements = document.getElementsByClassName('math');
+      for (let element of mathElements) {
+        katex.render(element.textContent || '', element as HTMLElement, {
+          displayMode: element.classList.contains('display'),
+          throwOnError: false,
+        });
+      }
+    }
+  }, [activeTab]);
+
   const handleMouseDown = () => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -146,10 +159,7 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemData }) => {
                   <div dangerouslySetInnerHTML={{ __html: problemData.problem_description }} />
                 )}
                 {activeTab === 'submissions' && (
-                  <div>
-                    <h2>Submissions</h2>
-                    <p>Submissions content goes here...</p>
-                  </div>
+                  <SubmissionsSummary problemId={problemData.id} />
                 )}
               </Content>
             </div>
