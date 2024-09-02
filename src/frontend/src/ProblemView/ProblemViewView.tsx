@@ -5,6 +5,7 @@ import 'react-resizable/css/styles.css';
 import '../App.css';
 import 'katex/dist/katex.min.css';
 import katex from 'katex';
+import styled from 'styled-components';
 
 interface ProblemViewViewProps {
   problemData: {
@@ -16,9 +17,76 @@ interface ProblemViewViewProps {
   };
 }
 
+const Container = styled.div`
+    display: flex;
+    height: 100vh;
+`;
+
+const Pane = styled.div<{ width: number }>`
+    width: ${(props) => props.width}%;
+    overflow-y: auto;
+    background-color: #282c34;
+`;
+
+const Divider = styled.div`
+    width: 10px;
+    background-color: #21252b;
+    cursor: col-resize;
+    position: relative;
+`;
+
+const DividerDent = styled.div`
+    width: 6px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 3px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: background-color 0.3s;
+`;
+
+const TabPicker = styled.div`
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #abb2bf;
+    background-color: transparent;
+    border-radius: 5px 5px 0 0;
+`;
+
+const TabButton = styled.button<{ active: boolean }>`
+    background-color: ${(props) => (props.active ? '#61dafb' : '#282c34')};
+    color: ${(props) => (props.active ? '#282c34' : '#abb2bf')};
+    border: 1px solid #abb2bf;
+    border-bottom: ${(props) => (props.active ? 'none' : '1px solid #abb2bf')};
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    margin-right: 10px;
+    &:hover {
+        color: #61dafb;
+    }
+`;
+
+const Content = styled.div`
+    padding: 20px;
+    background-color: #282c34;
+    color: #abb2bf;
+    border-radius: 5px;
+`;
+
+const Title = styled.h1`
+    color: #61dafb;
+    background-color: #282c34;
+    padding: 20px;
+    border-radius: 5px;
+`;
+
 const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemData }) => {
   const [dividerPosition, setDividerPosition] = useState(50); // initial position at 50%
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState('description'); // state to manage active tab
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -61,43 +129,38 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemData }) => {
   return (
     <div>
       {isAuthenticated ? (
-        <div className="container">
-          <div className="pane left-pane" style={{ width: `${dividerPosition}%` }}>
+        <Container>
+          <Pane width={dividerPosition}>
             <div>
-              <h1>{problemData.title}</h1>
-              <div dangerouslySetInnerHTML={{ __html: problemData.problem_description }} />
-              <div style={{ height: '200px' }}> </div>
+              <Title>{problemData.title}</Title>
+              <TabPicker>
+                <TabButton active={activeTab === 'description'} onClick={() => setActiveTab('description')}>
+                  Problem Description
+                </TabButton>
+                <TabButton active={activeTab === 'submissions'} onClick={() => setActiveTab('submissions')}>
+                  Submissions
+                </TabButton>
+              </TabPicker>
+              <Content>
+                {activeTab === 'description' && (
+                  <div dangerouslySetInnerHTML={{ __html: problemData.problem_description }} />
+                )}
+                {activeTab === 'submissions' && (
+                  <div>
+                    <h2>Submissions</h2>
+                    <p>Submissions content goes here...</p>
+                  </div>
+                )}
+              </Content>
             </div>
-          </div>
-          <div
-            className="divider"
-            onMouseDown={handleMouseDown}
-            style={{
-              width: '10px',
-              backgroundColor: '#21252b',
-              cursor: 'col-resize',
-              position: 'relative',
-            }}
-          >
-            <div
-              style={{
-                width: '6px',
-                height: '20px',
-                backgroundColor: '#fff',
-                borderRadius: '3px',
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                transition: 'background-color 0.3s',
-              }}
-              className="divider-dent"
-            />
-          </div>
-          <div className="pane right-pane" style={{ width: `${100 - dividerPosition}%` }}>
+          </Pane>
+          <Divider onMouseDown={handleMouseDown}>
+            <DividerDent />
+          </Divider>
+          <Pane width={100 - dividerPosition}>
             <CodeEditor problemName={problemData?.title ?? 'invalid_name'} />
-          </div>
-        </div>
+          </Pane>
+        </Container>
       ) : (
         <AuthPage onAuthSuccess={handleAuthSuccess} />
       )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 interface TestCase {
@@ -31,7 +31,7 @@ const Button = styled.button`
     color: #282c34;
     border: none;
     padding: 10px 20px;
-    margin: 10px 0;
+    margin: 10px;
     cursor: pointer;
     border-radius: 5px;
 `;
@@ -55,34 +55,33 @@ const Input = styled.input`
     margin: 5px 0;
     width: 100%;
     box-sizing: border-box;
-`;
-
-const TextArea = styled.textarea`
-  padding: 10px;
-  margin: 5px 0;
-  width: 100%;
-  box-sizing: border-box;
+    background-color: #21252b;
+    color: #abb2bf;
+    border: 1px solid #abb2bf;
+    border-radius: 5px;
 `;
 
 const HorizontalLine = styled.hr`
-  border: 1px solid #abb2bf;
+    border: 1px solid #abb2bf;
 `;
 
 const TestCasesComponent: React.FC = () => {
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [newInput, setNewInput] = useState('');
-  const [newExpectedOutput, setNewExpectedOutput] = useState('');
 
   const addTestCase = () => {
     const newTestCase: TestCase = {
       id: testCases.length + 1,
       input: newInput,
-      expectedOutput: newExpectedOutput,
+      expectedOutput: '', // Placeholder for expected output
     };
     setTestCases([...testCases, newTestCase]);
     setNewInput('');
-    setNewExpectedOutput('');
   };
+
+  useEffect(() => {
+    addTestCase();
+  }, []);
 
   const runTestCases = () => {
     // Implement logic to run test cases and update actualOutput, stdout, and error
@@ -90,6 +89,7 @@ const TestCasesComponent: React.FC = () => {
 
   const submitSolution = () => {
     // Implement logic to submit the solution against all test cases
+
   };
 
   return (
@@ -98,6 +98,7 @@ const TestCasesComponent: React.FC = () => {
       <TitleContainer>
         <Title>Test Cases</Title>
         <div>
+          <Button onClick={addTestCase}>Add Test Case</Button>
           <Button onClick={runTestCases}>Run Test Cases</Button>
           <Button onClick={submitSolution}>Submit Solution</Button>
         </div>
@@ -105,8 +106,19 @@ const TestCasesComponent: React.FC = () => {
       <TestCaseList>
         {testCases.map((testCase) => (
           <TestCaseItem key={testCase.id}>
-            <div><strong>Input:</strong> {testCase.input}</div>
-            <div><strong>Expected Output:</strong> {testCase.expectedOutput}</div>
+            <div>
+              <strong>Input:</strong>
+              <Input
+                type="text"
+                value={testCase.input}
+                onChange={(e) => {
+                  const updatedTestCases = testCases.map((tc) =>
+                    tc.id === testCase.id ? { ...tc, input: e.target.value } : tc
+                  );
+                  setTestCases(updatedTestCases);
+                }}
+              />
+            </div>
             {testCase.actualOutput && <div><strong>Actual Output:</strong> {testCase.actualOutput}</div>}
             {testCase.stdout && <div><strong>Stdout:</strong> {testCase.stdout}</div>}
             {testCase.error && <div><strong>Error:</strong> {testCase.error}</div>}
@@ -114,18 +126,6 @@ const TestCasesComponent: React.FC = () => {
         ))}
       </TestCaseList>
       <div>
-        <Input
-          type="text"
-          placeholder="Input"
-          value={newInput}
-          onChange={(e) => setNewInput(e.target.value)}
-        />
-        <TextArea
-          placeholder="Expected Output"
-          value={newExpectedOutput}
-          onChange={(e) => setNewExpectedOutput(e.target.value)}
-        />
-        <Button onClick={addTestCase}>Add Test Case</Button>
       </div>
     </Container>
   );
