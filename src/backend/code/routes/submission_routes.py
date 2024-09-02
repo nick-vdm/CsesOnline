@@ -58,6 +58,9 @@ def get_submission(submission_id):
             "result": submission.result,
             "result_time_ms": submission.result_time_ms,
             "result_memory_kb": submission.result_memory_kb,
+            "code": submission.code,
+            "output_text": submission.output_text,
+            "error_text": submission.error_text,
         },
         links=link.Collection(
             link.Link("collection", href=url_for("submission_routes.get_submissions")),

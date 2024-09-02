@@ -24,33 +24,33 @@ const ControlBar = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #21252b; /* Atom One Dark background color */
-    padding: 10px 20px; /* Adjusted padding for better spacing */
-    color: #abb2bf; /* Atom One Dark text color */
-    border-bottom: 1px solid #3e4451; /* Atom One Dark border color */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    background-color: #21252b;
+    padding: 10px 20px; 
+    color: #abb2bf; 
+    border-bottom: 1px solid #3e4451; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
 `;
 
 const Select = styled.select`
-    background-color: #2c313c; /* Atom One Dark select background */
-    color: #abb2bf; /* Atom One Dark select text color */
-    border: 1px solid #3e4451; /* Atom One Dark select border */
+    background-color: #2c313c; 
+    color: #abb2bf; 
+    border: 1px solid #3e4451; 
     padding: 5px;
     margin-left: 10px;
-    border-radius: 4px; /* Rounded corners for better aesthetics */
+    border-radius: 4px; 
 `;
 
 const Button = styled.button`
-    background-color: #61dafb; /* Atom One Dark button background */
-    color: #282c34; /* Atom One Dark button text color */
+    background-color: #61dafb; 
+    color: #282c34; 
     border: none;
     padding: 5px 10px;
     cursor: pointer;
     transition: background-color 0.3s;
-    border-radius: 4px; /* Rounded corners for better aesthetics */
+    border-radius: 4px; 
 
     &:hover {
-        background-color: #528bff; /* Atom One Dark button hover background */
+        background-color: #528bff; 
     }
 `;
 

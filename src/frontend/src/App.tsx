@@ -5,6 +5,7 @@ import ProblemViewWrapper from './ProblemView/ProblemViewWrapper';
 import AuthPage from './Auth/AuthPageComponent';
 import TopBar from './TopBar/TopBar';
 import Profile from './Profile/ProfileView';
+import SubmissionView from './Submission/SubmissionView';
 import { PATHS } from './Consts';
 
 const App: React.FC = () => {
@@ -30,6 +31,7 @@ const App: React.FC = () => {
         <Route path={PATHS.PROBLEM_LIST} element={<ProblemSelector />} />
         <Route path="/problem/:problemId" element={<ProblemViewWrapper />} />
         <Route path="/profile/:username" element={<Profile />} />
+        <Route path="/submission/:submissionId" element={<SubmissionView />} />
         <Route
           path={PATHS.AUTH_SIGNUP}
           element={
