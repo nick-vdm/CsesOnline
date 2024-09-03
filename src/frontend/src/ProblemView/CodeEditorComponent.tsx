@@ -56,6 +56,7 @@ const Button = styled.button`
 
 const CodeEditor: React.FC<{ problemName: string , problemId: number }> = ({ problemName, problemId }) => {
   const editorRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<EditorView | null>(null);
   const [language, setLanguage] = useState('python');
   const [editorMode, setEditorMode] = useState('normal');
 
@@ -79,6 +80,7 @@ const CodeEditor: React.FC<{ problemName: string , problemId: number }> = ({ pro
       extensions,
       parent: editorRef.current,
     });
+    viewRef.current = view;
 
     return () => {
       view.destroy();
@@ -88,7 +90,7 @@ const CodeEditor: React.FC<{ problemName: string , problemId: number }> = ({ pro
   const handleSubmit = async () => {
     const submissionData = {
       program_lang: language,
-      code: 'Hello',
+      code: viewRef.current?.state.doc.toString(),
       problem_id: problemId,
     };
 
