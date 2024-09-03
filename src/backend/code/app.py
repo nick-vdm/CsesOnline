@@ -1,4 +1,8 @@
 import os
+from threading import Thread
+
+from code.services.ProblemRunner import query_pending_submissions
+
 print("My working dir is,", os.getcwd())
 
 from code.extensions import db
@@ -73,5 +77,10 @@ if __name__ == '__main__':
     app = create_app()
     app.config["TESTING"] = False
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+
+    # Start ProblemRunner
+    query_thread = Thread(target=query_pending_submissions)
+    query_thread.start()
+
     app.run(host='0.0.0.0', port=5000)
 
