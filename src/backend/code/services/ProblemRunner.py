@@ -1,12 +1,10 @@
-import logging
+import logging.config
 import os
-import subprocess
 import tempfile
 import time
 from queue import Queue
 from threading import Thread
 
-import docker
 from dotenv import load_dotenv
 
 from code.extensions import db
@@ -18,45 +16,55 @@ INTERVAL = int(os.getenv("CHECK_INTERVAL", 60))
 MAX_WORKERS = int(os.getenv("MAX_WORKERS", 5))
 TESTCASE_DIR = os.getenv("TESTCASE_DIR", "/path/to/testcases")
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-client = docker.from_env()
-
+print("Setting up problem runner logger")
+print(f'Logging folder: {os.getenv('LOGGING_FOLDER')}')
+logging.config.fileConfig("logging.conf")
+log = logging.getLogger("app")
 work_queue = Queue()
 
 
-def query_pending_submissions():
-    query_thread = Thread(target=query_pending_submissions)
-    query_thread.start()
+def query_pending_submissions(app):
+    with app.app_context():
+        threads = []
+        for _ in range(MAX_WORKERS):
+            t = Thread(target=worker, daemon=True, args=(app,))
+            t.start()
+            threads.append(t)
 
-    threads = []
-    for _ in range(MAX_WORKERS):
-        t = Thread(target=worker)
-        t.start()
-        threads.append(t)
+        print(f"Beginning to query pending submissions interval={INTERVAL}")
+        while True:
+            print("Query...")
+            log.info("Checking for pending submissions")
 
-    while True:
-        pending_submissions = Submission.query.filter_by(status="PENDING").all()
-        for submission in pending_submissions:
-            work_queue.put(submission)
-        time.sleep(INTERVAL)
+            pending_submissions = Submission.query.filter_by(status="PENDING").all()
+
+            if len(pending_submissions) == 0:
+                log.info("No pending submissions found")
+            else:
+                log.info(f"Found {len(pending_submissions)} pending submissions")
+
+            for submission in pending_submissions:
+                work_queue.put(submission)
+
+            time.sleep(INTERVAL)
 
 
-def worker():
-    while True:
-        submission = work_queue.get()
-        if submission is None:
-            break
-        process_submission(submission)
-        work_queue.task_done()
+def worker(app):
+    with app.app_context():
+        while True:
+            submission = work_queue.get()
+            if submission is None:
+                time.sleep(INTERVAL / 6)
+            else:
+                process_submission(submission)
+                work_queue.task_done()
 
 
 def process_submission(submission):
     try:
         test_cases = find_test_cases(submission.problem_id)
         if not test_cases:
-            logger.error(f"No test cases found for problem {submission.problem_id}")
+            log.error(f"No test cases found for problem {submission.problem_id}")
             return
 
         result, output, error = run_code_in_docker(submission.code, test_cases)
@@ -72,7 +80,7 @@ def process_submission(submission):
         submission.result = result
         db.session.commit()
     except Exception as e:
-        logger.error(f"Error processing submission {submission.id}: {e}")
+        log.error(f"Error processing submission {submission.id}: {e}")
 
 
 def find_test_cases(problem_id):
@@ -109,15 +117,16 @@ def run_code_in_docker(code, test_cases):
             with open(in_file_path, "r") as input_file:
                 input_data = input_file.read()
 
-            command = [
-                "docker", "run", "--rm",
-                "-v", f"{temp_dir}:/mnt",
+            container = client.containers.run(
                 "python:3.8",
-                "python", "/mnt/submission.py"
-            ]
+                "python /mnt/submission.py",
+                volumes={temp_dir: {'bind': '/mnt', 'mode': 'rw'}},
+                detach=True,
+                stdin_open=True
+            )
 
-            process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = process.communicate(input=input_data.encode())
+            stdout, stderr = container.communicate(input=input_data.encode())
+            container.wait()
 
             with open(out_file_path, "r") as expected_output_file:
                 expected_output = expected_output_file.read()

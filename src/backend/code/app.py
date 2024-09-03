@@ -33,7 +33,7 @@ def create_app():
     print("Looking from", os.getcwd())
     print(f'Logging folder: {os.getenv('LOGGING_FOLDER')}')
     logging.config.fileConfig("logging.conf")
-    log = logging.getLogger("code")
+    log = logging.getLogger("app")
     log.info("Creating code")
 
     app = Flask(__name__)
@@ -79,8 +79,7 @@ if __name__ == '__main__':
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 
     # Start ProblemRunner
-    query_thread = Thread(target=query_pending_submissions)
+    query_thread = Thread(target=query_pending_submissions, args=(app, ), daemon=True)
     query_thread.start()
-
     app.run(host='0.0.0.0', port=5000)
 
