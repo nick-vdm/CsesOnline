@@ -25,36 +25,36 @@ const ControlBar = styled.div`
     justify-content: space-between;
     align-items: center;
     background-color: #21252b;
-    padding: 10px 20px; 
-    color: #abb2bf; 
-    border-bottom: 1px solid #3e4451; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+    padding: 10px 20px;
+    color: #abb2bf;
+    border-bottom: 1px solid #3e4451;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const Select = styled.select`
-    background-color: #2c313c; 
-    color: #abb2bf; 
-    border: 1px solid #3e4451; 
+    background-color: #2c313c;
+    color: #abb2bf;
+    border: 1px solid #3e4451;
     padding: 5px;
     margin-left: 10px;
-    border-radius: 4px; 
+    border-radius: 4px;
 `;
 
 const Button = styled.button`
-    background-color: #61dafb; 
-    color: #282c34; 
+    background-color: #61dafb;
+    color: #282c34;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
     transition: background-color 0.3s;
-    border-radius: 4px; 
+    border-radius: 4px;
 
     &:hover {
-        background-color: #528bff; 
+        background-color: #528bff;
     }
 `;
 
-const CodeEditor: React.FC<{ problemName: string }> = ({ problemName }) => {
+const CodeEditor: React.FC<{ problemName: string , problemId: number }> = ({ problemName, problemId }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [language, setLanguage] = useState('python');
   const [editorMode, setEditorMode] = useState('normal');
@@ -85,9 +85,32 @@ const CodeEditor: React.FC<{ problemName: string }> = ({ problemName }) => {
     };
   }, [problemName, language, editorMode]);
 
-  const handleSubmit = () => {
-    // Handle the submission logic here
-    console.log('Submit button clicked');
+  const handleSubmit = async () => {
+    const submissionData = {
+      program_lang: language,
+      code: 'Hello',
+      problem_id: problemId,
+    };
+
+    const token = localStorage.getItem('token');
+
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/api/create_submission`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(submissionData),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Invalid token');
+      }
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to create submission');
+    }
+
   };
 
   return (

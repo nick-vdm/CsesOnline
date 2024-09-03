@@ -124,12 +124,12 @@ def create_submission(current_user):
         code=code,
         linked_user=current_user.id,
         problem_id=problem_id,
-        status=data.get("status", "PENDING"),
-        result=data.get("result"),
-        result_time_ms=data.get("result_time_ms"),
-        result_memory_kb=data.get("result_memory_kb"),
-        output_text=data.get("output_text"),
-        error_text=data.get("error_text"),
+        status="PENDING",
+        result="PENDING",
+        result_time_ms=-1,
+        result_memory_kb=-1,
+        output_text="",
+        error_text="",
     )
 
     db.session.add(new_submission)

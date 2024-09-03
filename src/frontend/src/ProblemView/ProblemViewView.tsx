@@ -168,7 +168,7 @@ const ProblemViewView: React.FC<ProblemViewViewProps> = ({ problemData }) => {
             <DividerDent />
           </Divider>
           <Pane width={100 - dividerPosition}>
-            <CodeEditor problemName={problemData?.title ?? 'invalid_name'} />
+            <CodeEditor problemName={problemData?.title ?? 'invalid_name'} problemId={problemData?.id ?? -1} />
           </Pane>
         </Container>
       ) : (
